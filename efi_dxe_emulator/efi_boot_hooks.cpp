@@ -407,11 +407,20 @@ install_configuration_table(uc_engine* uc, uint64_t base_addr, size_t *out_count
 {
     /* create the configuration table */
     EFI_CONFIGURATION_TABLE conf_table = {
-        gPcdDataBaseHobGuid, nullptr
+        gEfiHobListGuid, (void *)(base_addr + 0x1000)
     };
 
-    uc_mem_write(uc, base_addr, &conf_table, sizeof(conf_table));
+    uc_err err = uc_mem_write(uc, base_addr, &conf_table, sizeof(conf_table));
+    VERIFY_UC_OPERATION_RET(err, -1, "Failed to write configuration table");
     *out_count = 1;
+
+    static const UINT16 EFI_HOB_TYPE_GUID_EXTENSION = 4;
+    EFI_HOB_GUID_TYPE pcdHob = {
+        { EFI_HOB_TYPE_GUID_EXTENSION, 0, 0 }, gPcdDataBaseHobGuid,
+    };
+
+    err = uc_mem_write(uc, (base_addr + 0x1000), &pcdHob, sizeof(pcdHob));
+    VERIFY_UC_OPERATION_RET(err, -1, "Failed to write PCD HOB at %p", 0xdeadbeef);
 
     return 0;
 }

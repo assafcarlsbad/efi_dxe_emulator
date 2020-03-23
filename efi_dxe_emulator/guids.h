@@ -15,3 +15,4 @@ EFI_GUID
 string_to_guid(const char* str);
 
 extern EFI_GUID gPcdDataBaseHobGuid;
+extern EFI_GUID gEfiHobListGuid;

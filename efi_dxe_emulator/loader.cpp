@@ -193,13 +193,13 @@ create_and_map_efi_system_table(uc_engine *uc)
     size_t total_boot_hooks = 0;
     install_boot_services(uc, boot_addr, &total_boot_hooks);
     
-    uint64_t configuration_addr = boot_addr + total_boot_hooks * HOOK_SIZE;
+    uint64_t configuration_addr = boot_addr + total_boot_hooks * HOOK_SIZE + 0x1000;
     size_t total_configuration_entries = 0;
     install_configuration_table(uc, configuration_addr, &total_configuration_entries);
 
     g_efi_table.RuntimeServices = (EFI_RUNTIME_SERVICES *)(runtime_addr);
     g_efi_table.BootServices = (EFI_BOOT_SERVICES *)(boot_addr);
-    g_efi_table.NumberOfTableEntries = 1;
+    g_efi_table.NumberOfTableEntries = total_configuration_entries;
     g_efi_table.ConfigurationTable = (EFI_CONFIGURATION_TABLE *)(configuration_addr);
 
     err = uc_mem_write(uc, target_addr, (void*)&g_efi_table, sizeof(EFI_SYSTEM_TABLE));
