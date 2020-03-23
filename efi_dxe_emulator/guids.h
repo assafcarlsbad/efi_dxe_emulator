@@ -13,3 +13,5 @@ guid_to_string(EFI_GUID* guid);
 
 EFI_GUID
 string_to_guid(const char* str);
+
+extern EFI_GUID gPcdDataBaseHobGuid;

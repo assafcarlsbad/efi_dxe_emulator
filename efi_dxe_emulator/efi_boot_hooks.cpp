@@ -402,6 +402,20 @@ install_boot_services(uc_engine *uc, uint64_t base_addr, size_t *out_count)
     return 0;
 }
 
+int
+install_configuration_table(uc_engine* uc, uint64_t base_addr, size_t *out_count)
+{
+    /* create the configuration table */
+    EFI_CONFIGURATION_TABLE conf_table = {
+        gPcdDataBaseHobGuid, nullptr
+    };
+
+    uc_mem_write(uc, base_addr, &conf_table, sizeof(conf_table));
+    *out_count = 1;
+
+    return 0;
+}
+
 char *
 lookup_boot_services_table(int offset)
 {

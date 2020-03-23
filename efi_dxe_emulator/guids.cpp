@@ -73,3 +73,10 @@ EFI_GUID string_to_guid(const char * str)
 
     return guid;
 }
+
+#define PCD_DATABASE_HOB_GUID \
+  { \
+    0xEA296D92, 0x0B69, 0x423C, { 0x8C, 0x28, 0x33, 0xB4, 0xE0, 0xA9, 0x12, 0x68 } \
+  }
+
+EFI_GUID gPcdDataBaseHobGuid = PCD_DATABASE_HOB_GUID;
