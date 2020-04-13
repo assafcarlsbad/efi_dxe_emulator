@@ -188,13 +188,19 @@ create_and_map_efi_system_table(uc_engine *uc)
     size_t total_runtime_hooks = 0;
     install_runtime_services(uc, runtime_addr, &total_runtime_hooks);
     
-    uint64_t boot_addr = target_addr + sizeof(EFI_SYSTEM_TABLE) + sizeof(EFI_RUNTIME_SERVICES) + total_runtime_hooks * HOOK_SIZE;
+    uint64_t boot_addr = runtime_addr + sizeof(EFI_RUNTIME_SERVICES) + total_runtime_hooks * HOOK_SIZE;
     size_t total_boot_hooks = 0;
     install_boot_services(uc, boot_addr, &total_boot_hooks);
     
+    uint64_t configuration_addr = boot_addr + sizeof(EFI_BOOT_SERVICES) + total_boot_hooks * HOOK_SIZE;
+    size_t total_configuration_entries = 0;
+    install_configuration_table(uc, configuration_addr, &total_configuration_entries);
+
     g_efi_table.RuntimeServices = (EFI_RUNTIME_SERVICES *)(runtime_addr);
     g_efi_table.BootServices = (EFI_BOOT_SERVICES *)(boot_addr);
-    
+    g_efi_table.NumberOfTableEntries = total_configuration_entries;
+    g_efi_table.ConfigurationTable = (EFI_CONFIGURATION_TABLE *)(configuration_addr);
+
     err = uc_mem_write(uc, target_addr, (void*)&g_efi_table, sizeof(EFI_SYSTEM_TABLE));
     if (err != UC_ERR_OK)
     {

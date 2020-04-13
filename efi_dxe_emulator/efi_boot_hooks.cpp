@@ -402,6 +402,28 @@ install_boot_services(uc_engine *uc, uint64_t base_addr, size_t *out_count)
     return 0;
 }
 
+#define HOB_LIST_GUID \
+  { \
+    0x7739f24c, 0x93d7, 0x11d4, {0x9a, 0x3a, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d } \
+  }
+
+EFI_GUID gEfiHobListGuid = HOB_LIST_GUID;
+
+int
+install_configuration_table(uc_engine* uc, uint64_t base_addr, size_t *out_count)
+{
+    /* create the configuration table */
+    EFI_CONFIGURATION_TABLE conf_table[1] = {
+        { gEfiHobListGuid, nullptr },
+    };
+
+    uc_err err = uc_mem_write(uc, base_addr, &conf_table, sizeof(conf_table));
+    VERIFY_UC_OPERATION_RET(err, -1, "Failed to write configuration table");
+    *out_count = _countof(conf_table);
+
+    return 0;
+}
+
 char *
 lookup_boot_services_table(int offset)
 {

@@ -70,5 +70,7 @@
 #include "efi_definitions.h"
 
 int install_boot_services(uc_engine *uc, uint64_t base_addr, size_t *out_count);
+int install_configuration_table(uc_engine* uc, uint64_t base_addr, size_t* out_count);
 char * lookup_boot_services_table(int offset);
 uint64_t lookup_boot_services_table(std::string_view name);
+
