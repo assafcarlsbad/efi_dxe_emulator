@@ -193,7 +193,7 @@ static int
 add_bpt_cmd(const char *exp, uc_engine *uc)
 {
     auto tokens = tokenize(exp);
-    _ASSERT(tokens.at(0) == "b");
+    _ASSERT(tokens.at(0) == "bp");
 
     errno = 0;
     
