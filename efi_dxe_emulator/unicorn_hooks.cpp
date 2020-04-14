@@ -89,6 +89,9 @@
 #include "loader.h"
 #include "unicorn_macros.h"
 #include "mem_utils.h"
+#include "capstone_utils.h"
+#include "taint.h"
+#include <algorithm>
 
 struct unicorn_hooks
 {
@@ -208,6 +211,13 @@ hook_code(uc_engine *uc, uint64_t address, uint32_t size, void *user_data)
         {
             del_breakpoint(address);
         }
+    }
+
+    cs_insn* insn = nullptr;
+    if (get_instruction(uc, address, &insn) == 0)
+    {
+        propagate_taint(uc, insn);
+        cs_free(insn, 1);
     }
 }
 
