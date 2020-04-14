@@ -21,7 +21,7 @@ bool taint_mem(uint64_t address, uint8_t size)
 
     if (tainted)
     {
-        OUTPUT_TAINT("Tainting memory range 0x%llx-0x%llx", address, address + size);
+        TAINT_MSG("Tainting memory range 0x%llx-0x%llx", address, address + size);
         return true;
     }
 
@@ -44,7 +44,7 @@ bool untaint_mem(uint64_t address, uint8_t size)
 
     if (erased)
     {
-        OUTPUT_TAINT("Un-tainted memory range 0x%llx-0x%llx", address, address + size);
+        TAINT_MSG("Un-tainted memory range 0x%llx-0x%llx", address, address + size);
         return true;
     }
 

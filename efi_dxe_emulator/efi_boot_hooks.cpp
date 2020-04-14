@@ -651,7 +651,7 @@ hook_AllocatePool(uc_engine *uc, uint64_t address, uint32_t size, void *user_dat
 #ifdef _DEBUG
     if (is_reg_tainted(X86_REG_RDX))
     {
-        OUTPUT_TAINT("AllocatePool() was called with user-controllable size!");
+        TAINT_MSG("AllocatePool() was called with user-controllable size!");
     }
 #endif // _DEBUG
 }

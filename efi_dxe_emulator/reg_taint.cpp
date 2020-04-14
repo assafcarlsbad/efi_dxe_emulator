@@ -114,7 +114,7 @@ bool taint_reg(x86_reg reg)
 
     if (tainted)
     {
-        OUTPUT_TAINT("Tainting register %s", get_register_name(reg));
+        TAINT_MSG("Tainting register %s", get_register_name(reg));
         return true;
     }
 
@@ -229,7 +229,7 @@ bool untaint_reg(x86_reg reg)
 
     if (removed > 0)
     {
-        OUTPUT_TAINT("Un-tainting register %s", get_register_name(reg));
+        TAINT_MSG("Un-tainting register %s", get_register_name(reg));
         return true;
     }
     return false;
