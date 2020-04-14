@@ -90,6 +90,57 @@ static int find_call_target(uc_engine *uc, cs_insn *insn, uint64_t *out_addr);
 
 #pragma region Exported functions
 
+int
+get_instruction(uc_engine* uc, uint64_t address, cs_insn **insn)
+{
+    csh handle = 0;
+    size_t count = 0;
+    cs_err cserr = CS_ERR_OK;
+    cs_mode mode = CS_MODE_64;
+    cs_arch arch = CS_ARCH_X86;
+    if ((cserr = cs_open(arch, mode, &handle)) != CS_ERR_OK)
+    {
+        ERROR_MSG("Error opening Capstone: %s (%d).", cs_strerror(cserr), cserr);
+        return -1;
+    }
+    /* enable detail - we need fields available in detail field */
+    cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+    /* disassemble! */
+    unsigned char buffer[16] = { 0 };
+    if (uc_mem_read(uc, address, buffer, sizeof(buffer)) != UC_ERR_OK)
+    {
+        ERROR_MSG("Failed to retrieve data to disassemble.");
+        return -1;
+    }
+    count = cs_disasm(handle, buffer, sizeof(buffer), address, 1, insn);
+    if (count < 1)
+    {
+        ERROR_MSG("Failed to retrieve instruction.");
+        return -1;
+    }
+
+    /* insn must be free'd from here onwards */
+    return 0;
+}
+
+uint64_t retrieve_effetive_address(uc_engine *uc, x86_op_mem op)
+{
+    uint64_t base = 0;
+    if (retrieve_capstone_register_contents(uc, op.base, &base) == -1)
+    {
+        return -1;
+    }
+
+    uint64_t index = 0;
+    if ((op.index != X86_REG_INVALID) &&
+        (retrieve_capstone_register_contents(uc, op.index, &index) == -1))
+    {
+        return -1;
+    }
+
+    return (base + index * op.scale + op.disp);
+}
+
 /*
  * function to find what is the next instruction to be executed
  * for regular instructions it just returns the next instruction
@@ -702,6 +753,24 @@ find_jmp_target(uc_engine *uc, cs_insn *insn, uint64_t *dst_addr)
     }
     
     return 0;
+}
+
+const char * get_register_name(x86_reg reg)
+{
+    static csh handle = 0;
+
+    if (handle == 0)
+    {
+        /* open handle to Capstone engine */
+        cs_err cserr = CS_ERR_OK;
+        if ((cserr = cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) != CS_ERR_OK)
+        {
+            ERROR_MSG("Error opening Capstone: %s (%d).", cs_strerror(cserr), cserr);
+            return "";
+        }
+    }
+
+    return cs_reg_name(handle, reg);
 }
 
 #pragma endregion

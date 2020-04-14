@@ -84,6 +84,8 @@
 #include "guids.h"
 #include "events.h"
 #include "loader.h"
+#include "taint.h"
+#include "reg_taint.h"
 
 static void hook_RaiseTPL(uc_engine *uc, uint64_t address, uint32_t size, void *user_data);
 static void hook_RestoreTPL(uc_engine *uc, uint64_t address, uint32_t size, void *user_data);
@@ -645,6 +647,13 @@ hook_AllocatePool(uc_engine *uc, uint64_t address, uint32_t size, void *user_dat
     uint64_t r_rax = EFI_SUCCESS;
     err = uc_reg_write(uc, UC_X86_REG_RAX, &r_rax);
     VERIFY_UC_OPERATION_VOID(err, "Failed to write RAX return value");
+
+#ifdef _DEBUG
+    if (is_reg_tainted(X86_REG_RDX))
+    {
+        OUTPUT_TAINT("AllocatePool() was called with user-controllable size!");
+    }
+#endif // _DEBUG
 }
 
 /*
