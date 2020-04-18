@@ -11,10 +11,10 @@ bool taint_mem(uint64_t address)
     return tainted;
 }
 
-bool taint_mem(uint64_t address, uint8_t size)
+bool taint_mem(uint64_t address, uint32_t size)
 {
     bool tainted = false;
-    for (uint8_t i = 0; i < size; i++)
+    for (uint32_t i = 0; i < size; i++)
     {
         tainted |= taint_mem(address + i);
     }
@@ -34,10 +34,10 @@ bool untaint_mem(uint64_t address)
     return (erased > 0);
 }
 
-bool untaint_mem(uint64_t address, uint8_t size)
+bool untaint_mem(uint64_t address, uint32_t size)
 {
     bool erased = false;
-    for (uint8_t i = 0; i < size; i++)
+    for (uint32_t i = 0; i < size; i++)
     {
         erased |= untaint_mem(address + i);
     }
@@ -56,9 +56,9 @@ bool is_mem_tainted(uint64_t address)
     return (tainted_addresses.find(address) != tainted_addresses.end());
 }
 
-bool is_mem_tainted(uint64_t address, uint8_t size)
+bool is_mem_tainted(uint64_t address, uint32_t size)
 {
-    for (uint8_t i = 0; i < size; i++)
+    for (uint32_t i = 0; i < size; i++)
     {
         if (is_mem_tainted(address + i))
         {
