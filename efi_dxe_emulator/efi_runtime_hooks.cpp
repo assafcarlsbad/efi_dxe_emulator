@@ -411,7 +411,11 @@ hook_GetVariable(uc_engine *uc, uint64_t address, uint32_t size, void *user_data
      */
     else
     {
-        lookup_nvram_var(VariableName, &VendorGuid, &content_size, &var_buf);
+        if (lookup_nvram_var(VariableName, &VendorGuid, &content_size, &var_buf) == NULL)
+        {
+            ret = EFI_NOT_FOUND;
+            goto out;
+        }
 #if 0
         DEBUG_MSG("Variable contents retrieved:");
         for (int i = 0; i < content_size; i++)
