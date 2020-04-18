@@ -168,6 +168,12 @@ bool untaint_reg(x86_reg reg)
     case X86_REG_SIL:  removed += tainted_regs.erase(X86_REG_SIL);
         break;
 
+    case X86_REG_RSP:  removed += tainted_regs.erase(X86_REG_RSP);
+    case X86_REG_ESP:  removed += tainted_regs.erase(X86_REG_ESP);
+    case X86_REG_SP:   removed += tainted_regs.erase(X86_REG_SP);
+    case X86_REG_SPL:  removed += tainted_regs.erase(X86_REG_SPL);
+        break;
+
     case X86_REG_RBP:  removed += tainted_regs.erase(X86_REG_RBP);
     case X86_REG_EBP:  removed += tainted_regs.erase(X86_REG_EBP);
     case X86_REG_BP:   removed += tainted_regs.erase(X86_REG_BP);
