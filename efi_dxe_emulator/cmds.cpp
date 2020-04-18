@@ -254,6 +254,7 @@ parse_user_cmd(char *exp)
             return cmd->function(exp, cmd->uc);
         }
     }
+    ERROR_MSG("Unrecognized command '%s'", exp);
     return 0;
 }
 
