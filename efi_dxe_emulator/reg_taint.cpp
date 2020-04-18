@@ -53,6 +53,12 @@ bool taint_reg(x86_reg reg)
     case X86_REG_DIL:  tainted |= _taint_reg(X86_REG_DIL);
         break;
 
+    case X86_REG_RBP:  tainted |= _taint_reg(X86_REG_RBP);
+    case X86_REG_EBP:  tainted |= _taint_reg(X86_REG_EBP);
+    case X86_REG_BP:   tainted |= _taint_reg(X86_REG_BP);
+    case X86_REG_BPL:  tainted |= _taint_reg(X86_REG_BPL);
+        break;
+
     case X86_REG_RSI:  tainted |= _taint_reg(X86_REG_RSI);
     case X86_REG_ESI:  tainted |= _taint_reg(X86_REG_ESI);
     case X86_REG_SI:   tainted |= _taint_reg(X86_REG_SI);
