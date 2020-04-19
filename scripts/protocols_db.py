@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--directory', help='extracted modules directory from UEFIExtract')
 parser.add_argument('-n', '--nvram', help='extracted NVRAM file from UEFITool')
 parser.add_argument('-e', '--emulator', help='path to the UEFI DXE emulator')
+parser.add_argument('-o', '--output', default='protocols.json', help='output file path in JSON format')
 args = parser.parse_args()
 
 protocols_db = {}
@@ -45,6 +46,6 @@ with click.progressbar(modules,
             else:
                 protocols_db[proto].append(target)
 
-with open("protocols.json", "w") as f:
+with open(args.output, "w") as f:
     json.dump(protocols_db, f, indent=2)
     
