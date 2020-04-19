@@ -26,7 +26,3 @@ PS> .\vcpkg install capstone[x86] getopt-win32 inih linenoise-ng mman unicorn fa
 Note: for 64-bit builds just append the suffix `:x64-windows` to each package name (e.g. `capstone:x64-windows`).
 
 3. Open `efi_dxe_emulator.sln` in Visual Studio and build it from the IDE.
-
-## Known issues
-
-The Debug version occasionally crashes when returning from `uc_emu_start`. Prefer using the Release version in the meantime.
