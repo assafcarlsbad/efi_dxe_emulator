@@ -31,10 +31,14 @@ def get_protocols(emulator, target, nvram):
     output = run(emulator, target, nvram, input=commands, capture_output=True, timeout=10)
     return re.findall("GUID: (.{8}-.{4}-.{4}-.{4}-.{12})", output)
 
+def show_item(item):
+    return f'Emulating: {item}'
+
 modules = glob.glob(os.path.join(args.directory, "*"))
-with click.progressbar(modules) as bar:
+with click.progressbar(modules,
+                       label='Modules analysis',
+                       item_show_func=show_item) as bar:
     for target in bar:
-        print(f"\tProcessing {target}")
         for proto in get_protocols(args.emulator, target, args.nvram):
             if protocols_db.get(proto) is None:
                 protocols_db[proto] = [target]
