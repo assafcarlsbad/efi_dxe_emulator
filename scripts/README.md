@@ -2,6 +2,10 @@
 
 This directory contains the following utility scripts:
 
+### update_guids.ps1 ###
+
+Pulls the latest GUID definitons from UEFITool's repository.
+
 ### protocols_db.py ###
 
 Creates a JSON dictionary which maps a protocol GUID to the name(s) of the UEFI module(s) who installed it (e.g. by calling the `InstallProtocolInterface` boot service).
