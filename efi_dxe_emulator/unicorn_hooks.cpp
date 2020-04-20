@@ -220,6 +220,11 @@ hook_code(uc_engine *uc, uint64_t address, uint32_t size, void *user_data)
     }
 }
 
+void hook_block(uc_engine* uc, uint64_t address, uint32_t size, void* user_data)
+{
+    OUTPUT_MSG("Block at 0x%llx of size %d", address, size);
+}
+
 /*
  * some test hook to trace the caller of a function
  */

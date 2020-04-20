@@ -404,6 +404,13 @@ main(int argc, const char * argv[])
         return EXIT_FAILURE;
     }
 
+    /* add a hook to trap valid memory accesses */
+    if (add_unicorn_hook(uc, UC_HOOK_BLOCK, hook_block, 1, 0) != 0)
+    {
+        ERROR_MSG("Failed to add basic block hook.");
+        return EXIT_FAILURE;
+    }
+
     uint64_t total_images = 0;
     struct bin_image *tmp_image = NULL;
     TAILQ_FOREACH(tmp_image, &g_images, entries)
