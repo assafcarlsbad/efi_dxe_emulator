@@ -58,7 +58,6 @@ static int
 coverage_cmd(const char* exp, uc_engine* uc)
 {
     auto tokens = tokenize(exp);
-    _ASSERT(tokens.at(0).starts_with() == "cov");
 
     std::string verb;
     try
@@ -97,7 +96,9 @@ register_coverage_cmds(uc_engine *uc)
 
 void record_basic_block(uc_engine *uc, uint64_t address, uint32_t size)
 {
-    if (!coverage_on) return;
+    /* For now always record code coverage unconditionally, otherwise we'll "miss"
+     * the first block of the entrypoint. Remove this comment once the issue is fixed */
+    //if (!coverage_on) return;
 
     size = block_size_workaround(uc, address, size);
 
