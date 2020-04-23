@@ -91,6 +91,8 @@
 #include "mem_utils.h"
 #include "capstone_utils.h"
 #include "taint.h"
+#include <vector>
+#include "coverage.h"
 
 struct unicorn_hooks
 {

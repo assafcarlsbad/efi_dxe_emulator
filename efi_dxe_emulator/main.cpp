@@ -98,6 +98,7 @@
 #include "sync.h"
 #include "events.h"
 #include "taint.h"
+#include "coverage.h"
 
 extern struct bin_images_tailq g_images;
 struct configuration g_config;
@@ -496,5 +497,6 @@ main(int argc, const char * argv[])
     prompt_loop();
     uc_close(uc);
     close_linenoise(g_config.history_file);
+    finalize_coverage("efi.cov");
     return 0;
 }

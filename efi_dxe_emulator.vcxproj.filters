@@ -84,6 +84,9 @@
     <ClCompile Include="efi_dxe_emulator\mem_taint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="efi_dxe_emulator\coverage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="efi_dxe_emulator\breakpoints.h">
@@ -168,6 +171,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="efi_dxe_emulator\mem_taint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="efi_dxe_emulator\coverage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
