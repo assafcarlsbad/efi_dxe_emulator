@@ -30,12 +30,16 @@ block_size_workaround(uc_engine* uc, uint64_t address, uint32_t size)
          * and compute the size accordingly. */
         uint64_t bb_end = address;
         cs_insn* insn = nullptr;
-        while (get_instruction(uc, bb_end, &insn) == 0)
+        bool stop = false;
+        while (!stop && get_instruction(uc, bb_end, &insn) == 0)
         {
-            if (strcmp(insn->mnemonic, "call") == 0)
+            for (uint32_t i = 0; i < insn->detail->groups_count; i++)
             {
-                cs_free(insn, 1);
-                break;
+                if (insn->detail->groups[i] == X86_GRP_CALL)
+                {
+                    stop = true;
+                    break;
+                }
             }
 
             bb_end += insn->size;
