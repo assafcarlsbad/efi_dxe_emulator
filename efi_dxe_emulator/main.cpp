@@ -495,11 +495,14 @@ main(int argc, const char * argv[])
     dispatch_event_notification_routines(uc);
 
     OUTPUT_MSG("[+] All done, main image emulation complete.");
+
+    auto coverage_file = std::filesystem::path(main_image->file_path).replace_extension("cov");
+    OUTPUT_MSG("[+] Code coverage written to %s.", coverage_file.string().c_str());
+    dump_coverage(coverage_file.string().c_str());
+
     context_cmd("", uc);
     prompt_loop();
     uc_close(uc);
     close_linenoise(g_config.history_file);
-    auto coverage_file = std::filesystem::path(main_image->file_path).replace_extension("cov");
-    dump_coverage(coverage_file.string().c_str());
     return 0;
 }
