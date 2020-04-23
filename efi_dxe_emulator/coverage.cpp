@@ -6,6 +6,7 @@
 #include <capstone/capstone.h>
 #include "capstone_utils.h"
 #include <array>
+#include "cmds.h"
 
 extern struct bin_images_tailq g_images;
 
@@ -47,8 +48,53 @@ block_size_workaround(uc_engine* uc, uint64_t address, uint32_t size)
     return size;
 }
 
+static bool coverage_on = false;
+
+static int
+coverage_cmd(const char* exp, uc_engine* uc)
+{
+    auto tokens = tokenize(exp);
+    _ASSERT(tokens.at(0).starts_with() == "cov");
+
+    std::string verb;
+    try
+    {
+        verb = tokens.at(1);
+    }
+    catch (const std::out_of_range&)
+    {
+        ERROR_MSG("Usage: cov [start|stop]");
+        return 0;
+    }
+
+    if (verb == "start")
+    {
+        OUTPUT_MSG("[+] Starting code coverage collection");
+        coverage_on = true;
+    }
+    else if (verb == "stop")
+    {
+        OUTPUT_MSG("[+] Stopping code coverage collection");
+        coverage_on = false;
+    }
+    else
+    {
+        ERROR_MSG("Usage: cov [start|stop]");
+    }
+
+    return 0;
+}
+
+void
+register_coverage_cmds(uc_engine *uc)
+{
+    add_user_cmd("coverage", "cov", coverage_cmd, "Controls coverage collection.\n\ncov [start|stop]", uc);
+}
+
 void record_basic_block(uc_engine *uc, uint64_t address, uint32_t size)
 {
+    if (!coverage_on) return;
+
     size = block_size_workaround(uc, address, size);
 
     struct bin_image* current_image = NULL;
@@ -62,7 +108,6 @@ void record_basic_block(uc_engine *uc, uint64_t address, uint32_t size)
             bb.mod_id = mod_id;
             bb.size = size;
             bb.start = address - current_image->mapped_addr;
-            //OUTPUT_MSG("Start = 0x%lx, size = 0x%x", bb.start, bb.size);
             basic_blocks.push_back(bb);
             break;
         }
@@ -71,33 +116,33 @@ void record_basic_block(uc_engine *uc, uint64_t address, uint32_t size)
     }
 }
 
-void finalize_coverage(const char* coverage_file)
+void dump_coverage(const char* coverage_file)
 {
     /* See https://www.ayrx.me/drcov-file-format for a more detailed explanation */
-    std::stringstream ss;
-    ss << "DRCOV VERSION: " << 2 << std::endl;
-    ss << "DRCOV FLAVOR: " << "drcov" << std::endl;
-    ss << "Module Table: " << "version " << 2 << ", count " << 1 << std::endl;
-    ss << "Columns: id, base, end, entry, checksum, timestamp, path" << std::endl;
+    std::stringstream drcov_header;
+    drcov_header << "DRCOV VERSION: " << 2 << std::endl;
+    drcov_header << "DRCOV FLAVOR: " << "drcov" << std::endl;
+    drcov_header << "Module Table: " << "version " << 2 << ", count " << 1 << std::endl;
+    drcov_header << "Columns: id, base, end, entry, checksum, timestamp, path" << std::endl;
 
     struct bin_image* current_image = NULL;
     uint16_t mod_id = 0;
     TAILQ_FOREACH(current_image, &g_images, entries)
     {
-        ss << mod_id << ", "
-           << current_image->base_addr << ", "
-           << current_image->base_addr + current_image->buf_size << ", "
-           << 0 << ", "
-           << 0 << ", "
-           << 0 << ", "
-           << current_image->file_path
-           << std::endl;
+        drcov_header << mod_id << ", "
+                     << current_image->base_addr << ", "
+                     << current_image->base_addr + current_image->buf_size << ", "
+                     << 0 << ", "
+                     << 0 << ", "
+                     << 0 << ", "
+                     << current_image->file_path
+                     << std::endl;
         mod_id++;
     }
-    ss << "BB Table: " << basic_blocks.size() << " bbs" << std::endl;
+    drcov_header << "BB Table: " << basic_blocks.size() << " bbs" << std::endl;
     
     FILE *fp = fopen(coverage_file, "wb");
-    fwrite(ss.str().c_str(), 1, ss.str().length(), fp);
+    fwrite(drcov_header.str().c_str(), 1, drcov_header.str().length(), fp);
     fwrite(basic_blocks.data(), sizeof(bb_entry_t), basic_blocks.size(), fp);
     fclose(fp);
 }

@@ -71,6 +71,7 @@
 #include <string.h>
 #include <assert.h>
 #include <errno.h>
+#include <filesystem>
 
 #include <unicorn/unicorn.h>
 
@@ -305,6 +306,7 @@ main(int argc, const char * argv[])
     register_breakpoint_cmds(uc);
     register_nvram_cmds(uc);
     register_sync_cmds(uc);
+    register_coverage_cmds(uc);
     
     /* allocate the different memory areas for executables, stack, heap, efi services, etc */
     if (allocate_emulation_mem(uc) != 0)
@@ -497,6 +499,7 @@ main(int argc, const char * argv[])
     prompt_loop();
     uc_close(uc);
     close_linenoise(g_config.history_file);
-    finalize_coverage("efi.cov");
+    auto coverage_file = std::filesystem::path(main_image->file_path).replace_extension("cov");
+    dump_coverage(coverage_file.string().c_str());
     return 0;
 }
