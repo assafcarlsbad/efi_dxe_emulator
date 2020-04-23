@@ -91,6 +91,8 @@
 #include "mem_utils.h"
 #include "capstone_utils.h"
 #include "taint.h"
+#include <vector>
+#include "coverage.h"
 
 struct unicorn_hooks
 {
@@ -218,6 +220,11 @@ hook_code(uc_engine *uc, uint64_t address, uint32_t size, void *user_data)
         propagate_taint(uc, insn);
         cs_free(insn, 1);
     }
+}
+
+void hook_block(uc_engine* uc, uint64_t address, uint32_t size, void* user_data)
+{
+    record_basic_block(uc, address, size);
 }
 
 /*

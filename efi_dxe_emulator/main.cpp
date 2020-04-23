@@ -71,6 +71,7 @@
 #include <string.h>
 #include <assert.h>
 #include <errno.h>
+#include <filesystem>
 
 #include <unicorn/unicorn.h>
 
@@ -98,6 +99,7 @@
 #include "sync.h"
 #include "events.h"
 #include "taint.h"
+#include "coverage.h"
 
 extern struct bin_images_tailq g_images;
 struct configuration g_config;
@@ -304,6 +306,7 @@ main(int argc, const char * argv[])
     register_breakpoint_cmds(uc);
     register_nvram_cmds(uc);
     register_sync_cmds(uc);
+    register_coverage_cmds(uc);
     
     /* allocate the different memory areas for executables, stack, heap, efi services, etc */
     if (allocate_emulation_mem(uc) != 0)
@@ -404,6 +407,13 @@ main(int argc, const char * argv[])
         return EXIT_FAILURE;
     }
 
+    /* add a hook to trap valid memory accesses */
+    if (add_unicorn_hook(uc, UC_HOOK_BLOCK, hook_block, 1, 0) != 0)
+    {
+        ERROR_MSG("Failed to add basic block hook.");
+        return EXIT_FAILURE;
+    }
+
     uint64_t total_images = 0;
     struct bin_image *tmp_image = NULL;
     TAILQ_FOREACH(tmp_image, &g_images, entries)
@@ -485,6 +495,11 @@ main(int argc, const char * argv[])
     dispatch_event_notification_routines(uc);
 
     OUTPUT_MSG("[+] All done, main image emulation complete.");
+
+    auto coverage_file = std::filesystem::path(main_image->file_path).replace_extension("cov");
+    OUTPUT_MSG("[+] Code coverage written to %s.", coverage_file.string().c_str());
+    dump_coverage(coverage_file.string().c_str());
+
     context_cmd("", uc);
     prompt_loop();
     uc_close(uc);
