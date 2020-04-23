@@ -9,6 +9,7 @@
 
 extern struct bin_images_tailq g_images;
 
+/* Taken from https://www.ayrx.me/drcov-file-format */
 typedef struct _bb_entry_t
 {
     uint32_t start;
@@ -18,28 +19,37 @@ typedef struct _bb_entry_t
 
 std::vector<bb_entry_t> basic_blocks;
 
-void on_basic_block(uc_engine *uc, uint64_t address, uint32_t size)
+static uint32_t
+block_size_workaround(uc_engine* uc, uint64_t address, uint32_t size)
 {
     if (size == 0)
     {
+        /* Looks like a Unicorn bug: in some cases the block's size is reported as 0.
+         * As a walkaround, we'll disassemble the code until we reach a 'CALL' instruction
+         * and compute the size accordingly. */
         uint64_t bb_end = address;
         cs_insn* insn = nullptr;
-        bool inside_block = true;
-        while (inside_block && get_instruction(uc, bb_end, &insn) == 0)
+        while (get_instruction(uc, bb_end, &insn) == 0)
         {
-            for (uint32_t i = 0; i < insn->detail->groups_count; i++)
+            if (strcmp(insn->mnemonic, "call") == 0)
             {
-                if (insn->detail->groups[i] == X86_GRP_CALL)
-                {
-                    inside_block = false;
-                }
+                cs_free(insn, 1);
+                break;
             }
+
             bb_end += insn->size;
             cs_free(insn, 1);
         }
 
         size = bb_end - address;
     }
+
+    return size;
+}
+
+void record_basic_block(uc_engine *uc, uint64_t address, uint32_t size)
+{
+    size = block_size_workaround(uc, address, size);
 
     struct bin_image* current_image = NULL;
     uint16_t mod_id = 0;
@@ -63,6 +73,7 @@ void on_basic_block(uc_engine *uc, uint64_t address, uint32_t size)
 
 void finalize_coverage(const char* coverage_file)
 {
+    /* See https://www.ayrx.me/drcov-file-format for a more detailed explanation */
     std::stringstream ss;
     ss << "DRCOV VERSION: " << 2 << std::endl;
     ss << "DRCOV FLAVOR: " << "drcov" << std::endl;
@@ -73,20 +84,14 @@ void finalize_coverage(const char* coverage_file)
     uint16_t mod_id = 0;
     TAILQ_FOREACH(current_image, &g_images, entries)
     {
-        ss  << mod_id
-            << ", "
-            << current_image->base_addr
-            << ", "
-            << current_image->base_addr + current_image->buf_size
-            << ", "
-            << 0
-            << ", "
-            << 0
-            << ", "
-            << 0
-            << ", "
-            << current_image->file_path
-            << std::endl;
+        ss << mod_id << ", "
+           << current_image->base_addr << ", "
+           << current_image->base_addr + current_image->buf_size << ", "
+           << 0 << ", "
+           << 0 << ", "
+           << 0 << ", "
+           << current_image->file_path
+           << std::endl;
         mod_id++;
     }
     ss << "BB Table: " << basic_blocks.size() << " bbs" << std::endl;
