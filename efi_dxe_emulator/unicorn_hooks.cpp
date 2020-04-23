@@ -309,18 +309,4 @@ hook_valid_mem(uc_engine* uc, uc_mem_type type, uint64_t address, int size, int6
     return 0;
 }
 
-bool
-hook_invalid_insn(uc_engine* uc, void* user_data)
-{
-    ERROR_MSG("Encountered an invalid instruction");
-    DEBUG_MSG("Dumping CPU context");
-
-    /* display current CPU context like gdbinit */
-    context_cmd(NULL, uc);
-    /* and let the user take control */
-    prompt_loop();
-    
-    return false;
-}
-
 #pragma endregion

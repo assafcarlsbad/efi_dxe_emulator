@@ -397,13 +397,6 @@ main(int argc, const char * argv[])
         return EXIT_FAILURE;
     }
 
-    /* add a hook to deal with invalid instructions exceptions */
-    if (add_unicorn_hook(uc, UC_HOOK_INSN_INVALID, hook_invalid_insn, 1, 0) != 0)
-    {
-        ERROR_MSG("Failed to add invalid instruction hook.");
-        return EXIT_FAILURE;
-    }
-
     /* add a hook to trap valid memory accesses */
     if (add_unicorn_hook(uc, UC_HOOK_MEM_VALID, hook_valid_mem, 1, 0) != 0)
     {
