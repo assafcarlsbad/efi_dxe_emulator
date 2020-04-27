@@ -236,8 +236,8 @@ parse_and_validate_PE_image(struct bin_image *target_image)
      * the location of the PE header
      * e_lfanew field into the MZ header gives us the location of the PE header
      */
-    IMAGE_NT_HEADERS *header = (IMAGE_NT_HEADERS*)(target_image->buf + dos_header->e_lfanew);
-    IMAGE_NT_HEADERS64 *header64 = (IMAGE_NT_HEADERS64*)(target_image->buf + dos_header->e_lfanew);
+    EFI_IMAGE_NT_HEADERS32 *header = (EFI_IMAGE_NT_HEADERS32*)(target_image->buf + dos_header->e_lfanew);
+    EFI_IMAGE_NT_HEADERS64 *header64 = (EFI_IMAGE_NT_HEADERS64*)(target_image->buf + dos_header->e_lfanew);
     
     switch (header->Signature)
     {
@@ -292,13 +292,13 @@ parse_and_validate_PE_image(struct bin_image *target_image)
     if (header->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC)
     {
         DEBUG_MSG("Number of sections is %d.", header64->FileHeader.NumberOfSections);
-        char *section_start = (char*)header64 + sizeof(IMAGE_NT_HEADERS64);
-        IMAGE_SECTION_HEADER *section = (IMAGE_SECTION_HEADER*)section_start;
+        char *section_start = (char*)header64 + sizeof(EFI_IMAGE_NT_HEADERS64);
+        EFI_IMAGE_SECTION_HEADER*section = (EFI_IMAGE_SECTION_HEADER*)section_start;
         for (int i = 0; i < header64->FileHeader.NumberOfSections; i++)
         {
             DEBUG_MSG("Name %s @ 0x%llx VirtualSize: 0x%x RawSize: 0x%x Relocs: %d", section->Name, header64->OptionalHeader.ImageBase + section->VirtualAddress, section->Misc.VirtualSize, section->SizeOfRawData, section->NumberOfRelocations);
             total_size += section->Misc.VirtualSize;
-            section = (IMAGE_SECTION_HEADER*)((char*)section + sizeof(IMAGE_SECTION_HEADER));
+            section = (EFI_IMAGE_SECTION_HEADER*)((char*)section + sizeof(EFI_IMAGE_SECTION_HEADER));
         }
     }
     
