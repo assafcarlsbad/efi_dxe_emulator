@@ -176,5 +176,8 @@
     <ClInclude Include="efi_dxe_emulator\coverage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="efi_dxe_emulator\types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

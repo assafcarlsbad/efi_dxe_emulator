@@ -177,6 +177,7 @@
     <ClInclude Include="efi_dxe_emulator\sync.h" />
     <ClInclude Include="efi_dxe_emulator\taint.h" />
     <ClInclude Include="efi_dxe_emulator\tunnel.h" />
+    <ClInclude Include="efi_dxe_emulator\types.h" />
     <ClInclude Include="efi_dxe_emulator\unicorn_hooks.h" />
     <ClInclude Include="efi_dxe_emulator\unicorn_macros.h" />
     <ClInclude Include="efi_dxe_emulator\unicorn_utils.h" />
