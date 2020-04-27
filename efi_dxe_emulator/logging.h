@@ -65,7 +65,7 @@
 
 #include <stdio.h>
 
-void log_debug(char *fmt, ...);
+void log_debug(const char *fmt, ...);
 void set_log_level(int level);
 
 #define ANSI_COLOR_RED     "\x1b[31m"

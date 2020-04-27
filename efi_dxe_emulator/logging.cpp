@@ -77,7 +77,7 @@ set_log_level(int level)
 }
 
 void
-log_debug(char *fmt, ...)
+log_debug(const char *fmt, ...)
 {
     if (log_level < 1)
     {
