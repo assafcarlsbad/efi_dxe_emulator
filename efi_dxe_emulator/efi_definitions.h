@@ -9210,7 +9210,7 @@ typedef struct {
 
 typedef struct _SAL_UPDATE_PAL_INFO_BLOCK {
     struct _SAL_UPDATE_PAL_INFO_BLOCK *Next;
-    struct SAL_UPDATE_PAL_DATA_BLOCK *DataBlock;
+    SAL_UPDATE_PAL_DATA_BLOCK *DataBlock;
     UINT8 StoreChecksum;
     UINT8 Reserved[15];
 } SAL_UPDATE_PAL_INFO_BLOCK;
