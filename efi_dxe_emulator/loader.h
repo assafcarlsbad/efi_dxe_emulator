@@ -75,7 +75,7 @@ struct bin_image
 {
     TAILQ_ENTRY(bin_image) entries;
     EFI_GUID guid;
-    IMAGE_DATA_DIRECTORY relocation_info;
+    EFI_IMAGE_DATA_DIRECTORY relocation_info;
     uint8_t *buf;
     uint8_t *header;        /* pointer to IMAGE_NT_HEADERS64 */
     char *file_path;
