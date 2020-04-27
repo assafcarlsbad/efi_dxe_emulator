@@ -217,7 +217,7 @@ create_and_map_efi_system_table(uc_engine *uc)
 static int
 parse_and_validate_PE_image(struct bin_image *target_image)
 {
-    IMAGE_DOS_HEADER *dos_header = (IMAGE_DOS_HEADER*)target_image->buf;
+    EFI_IMAGE_DOS_HEADER *dos_header = (EFI_IMAGE_DOS_HEADER*)target_image->buf;
     
     DEBUG_MSG("DOS Header Magic value 0x%x", dos_header->e_magic);
 
