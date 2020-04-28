@@ -140,224 +140,224 @@ struct _boot_hooks
 
 struct _boot_hooks boot_hooks[] = {
     {
-        .name = "RaiseTPL",
-        .offset = offsetof(EFI_BOOT_SERVICES, RaiseTPL),
-        .hook = (void*)hook_RaiseTPL
+        "RaiseTPL",
+        offsetof(EFI_BOOT_SERVICES, RaiseTPL),
+        (void*)hook_RaiseTPL,
     },
     {
-        .name = "RestoreTPL",
-        .offset = offsetof(EFI_BOOT_SERVICES, RestoreTPL),
-        .hook = (void*)hook_RestoreTPL
+        "RestoreTPL",
+        offsetof(EFI_BOOT_SERVICES, RestoreTPL),
+        (void*)hook_RestoreTPL,
     },
     {
-        .name = "AllocatePages",
-        .offset = offsetof(EFI_BOOT_SERVICES, AllocatePages),
-        .hook = (void*)hook_AllocatePages
+        "AllocatePages",
+        offsetof(EFI_BOOT_SERVICES, AllocatePages),
+        (void*)hook_AllocatePages,
     },
     {
-        .name = "FreePages",
-        .offset = offsetof(EFI_BOOT_SERVICES, FreePages),
-        .hook = (void*)hook_FreePages
+        "FreePages",
+        offsetof(EFI_BOOT_SERVICES, FreePages),
+        (void*)hook_FreePages,
     },
     {
-        .name = "GetMemoryMap",
-        .offset = offsetof(EFI_BOOT_SERVICES, GetMemoryMap),
-        .hook = (void*)hook_GetMemoryMap
+        "GetMemoryMap",
+        offsetof(EFI_BOOT_SERVICES, GetMemoryMap),
+        (void*)hook_GetMemoryMap
     },
     {
-        .name = "AllocatePool",
-        .offset = offsetof(EFI_BOOT_SERVICES, AllocatePool),
-        .hook = (void*)hook_AllocatePool
+        "AllocatePool",
+        offsetof(EFI_BOOT_SERVICES, AllocatePool),
+        (void*)hook_AllocatePool
     },
     {
-        .name = "FreePool",
-        .offset = offsetof(EFI_BOOT_SERVICES, FreePool),
-        .hook = (void*)hook_FreePool
+        "FreePool",
+        offsetof(EFI_BOOT_SERVICES, FreePool),
+        (void*)hook_FreePool
     },
     {
-        .name = "CreateEvent",
-        .offset = offsetof(EFI_BOOT_SERVICES, CreateEvent),
-        .hook = (void*)hook_CreateEvent
+        "CreateEvent",
+        offsetof(EFI_BOOT_SERVICES, CreateEvent),
+        (void*)hook_CreateEvent
     },
     {
-        .name = "SetTimer",
-        .offset = offsetof(EFI_BOOT_SERVICES, SetTimer),
-        .hook = (void*)hook_SetTimer
+        "SetTimer",
+        offsetof(EFI_BOOT_SERVICES, SetTimer),
+        (void*)hook_SetTimer
     },
     {
-        .name = "WaitForEvent",
-        .offset = offsetof(EFI_BOOT_SERVICES, WaitForEvent),
-        .hook = (void*)hook_WaitForEvent
+        "WaitForEvent",
+        offsetof(EFI_BOOT_SERVICES, WaitForEvent),
+        (void*)hook_WaitForEvent
     },
     {
-        .name = "SignalEvent",
-        .offset = offsetof(EFI_BOOT_SERVICES, SignalEvent),
-        .hook = (void*)hook_SignalEvent
+        "SignalEvent",
+        offsetof(EFI_BOOT_SERVICES, SignalEvent),
+        (void*)hook_SignalEvent
     },
     {
-        .name = "CloseEvent",
-        .offset = offsetof(EFI_BOOT_SERVICES, CloseEvent),
-        .hook = (void*)hook_CloseEvent
+        "CloseEvent",
+        offsetof(EFI_BOOT_SERVICES, CloseEvent),
+        (void*)hook_CloseEvent
     },
     {
-        .name = "CheckEvent",
-        .offset = offsetof(EFI_BOOT_SERVICES, CheckEvent),
-        .hook = (void*)hook_CheckEvent
+        "CheckEvent",
+        offsetof(EFI_BOOT_SERVICES, CheckEvent),
+        (void*)hook_CheckEvent
     },
     {
-        .name = "InstallProtocolInterface",
-        .offset = offsetof(EFI_BOOT_SERVICES, InstallProtocolInterface),
-        .hook = (void*)hook_InstallProtocolInterface
+        "InstallProtocolInterface",
+        offsetof(EFI_BOOT_SERVICES, InstallProtocolInterface),
+        (void*)hook_InstallProtocolInterface
     },
     {
-        .name = "ReinstallProtocolInterface",
-        .offset = offsetof(EFI_BOOT_SERVICES, ReinstallProtocolInterface),
-        .hook = (void*)hook_ReinstallProtocolInterface
+        "ReinstallProtocolInterface",
+        offsetof(EFI_BOOT_SERVICES, ReinstallProtocolInterface),
+        (void*)hook_ReinstallProtocolInterface
     },
     {
-        .name = "UninstallProtocolInterface",
-        .offset = offsetof(EFI_BOOT_SERVICES, UninstallProtocolInterface),
-        .hook = (void*)hook_UninstallProtocolInterface
+        "UninstallProtocolInterface",
+        offsetof(EFI_BOOT_SERVICES, UninstallProtocolInterface),
+        (void*)hook_UninstallProtocolInterface
     },
     {
-        .name = "HandleProtocol",
-        .offset = offsetof(EFI_BOOT_SERVICES, HandleProtocol),
-        .hook = (void*)hook_HandleProtocol
+        "HandleProtocol",
+        offsetof(EFI_BOOT_SERVICES, HandleProtocol),
+        (void*)hook_HandleProtocol
     },
     {
-        .name = "Reserved",
-        .offset = offsetof(EFI_BOOT_SERVICES, Reserved),
-        .hook = (void*)hook_Reserved
+        "Reserved",
+        offsetof(EFI_BOOT_SERVICES, Reserved),
+        (void*)hook_Reserved
     },
     {
-        .name = "RegisterProtocolNotify",
-        .offset = offsetof(EFI_BOOT_SERVICES, RegisterProtocolNotify),
-        .hook = (void*)hook_RegisterProtocolNotify
+        "RegisterProtocolNotify",
+        offsetof(EFI_BOOT_SERVICES, RegisterProtocolNotify),
+        (void*)hook_RegisterProtocolNotify
     },
     {
-        .name = "LocateHandle",
-        .offset = offsetof(EFI_BOOT_SERVICES, LocateHandle),
-        .hook = (void*)hook_LocateHandle
+        "LocateHandle",
+        offsetof(EFI_BOOT_SERVICES, LocateHandle),
+        (void*)hook_LocateHandle
     },
     {
-        .name = "LocateDevicePath",
-        .offset = offsetof(EFI_BOOT_SERVICES, LocateDevicePath),
-        .hook = (void*)hook_LocateDevicePath
+        "LocateDevicePath",
+        offsetof(EFI_BOOT_SERVICES, LocateDevicePath),
+        (void*)hook_LocateDevicePath
     },
     {
-        .name = "InstallConfigurationTable",
-        .offset = offsetof(EFI_BOOT_SERVICES, InstallConfigurationTable),
-        .hook = (void*)hook_InstallConfigurationTable
+        "InstallConfigurationTable",
+        offsetof(EFI_BOOT_SERVICES, InstallConfigurationTable),
+        (void*)hook_InstallConfigurationTable
     },
     {
-        .name = "LoadImage",
-        .offset = offsetof(EFI_BOOT_SERVICES, LoadImage),
-        .hook = (void*)hook_LoadImage
+        "LoadImage",
+        offsetof(EFI_BOOT_SERVICES, LoadImage),
+        (void*)hook_LoadImage
     },
     {
-        .name = "StartImage",
-        .offset = offsetof(EFI_BOOT_SERVICES, StartImage),
-        .hook = (void*)hook_StartImage
+        "StartImage",
+        offsetof(EFI_BOOT_SERVICES, StartImage),
+        (void*)hook_StartImage
     },
     {
-        .name = "Exit",
-        .offset = offsetof(EFI_BOOT_SERVICES, Exit),
-        .hook = (void*)hook_Exit
+        "Exit",
+        offsetof(EFI_BOOT_SERVICES, Exit),
+        (void*)hook_Exit
     },
     {
-        .name = "UnloadImage",
-        .offset = offsetof(EFI_BOOT_SERVICES, UnloadImage),
-        .hook = (void*)hook_UnloadImage
+        "UnloadImage",
+        offsetof(EFI_BOOT_SERVICES, UnloadImage),
+        (void*)hook_UnloadImage
     },
     {
-        .name = "ExitBootServices",
-        .offset = offsetof(EFI_BOOT_SERVICES, ExitBootServices),
-        .hook = (void*)hook_ExitBootServices
+        "ExitBootServices",
+        offsetof(EFI_BOOT_SERVICES, ExitBootServices),
+        (void*)hook_ExitBootServices
     },
     {
-        .name = "GetNextMonotonicCount",
-        .offset = offsetof(EFI_BOOT_SERVICES, GetNextMonotonicCount),
-        .hook = (void*)hook_GetNextMonotonicCount
+        "GetNextMonotonicCount",
+        offsetof(EFI_BOOT_SERVICES, GetNextMonotonicCount),
+        (void*)hook_GetNextMonotonicCount
     },
     {
-        .name = "Stall",
-        .offset = offsetof(EFI_BOOT_SERVICES, Stall),
-        .hook = (void*)hook_Stall
+        "Stall",
+        offsetof(EFI_BOOT_SERVICES, Stall),
+        (void*)hook_Stall
     },
     {
-        .name = "SetWatchdogTimer",
-        .offset = offsetof(EFI_BOOT_SERVICES, SetWatchdogTimer),
-        .hook = (void*)hook_SetWatchdogTimer
+        "SetWatchdogTimer",
+        offsetof(EFI_BOOT_SERVICES, SetWatchdogTimer),
+        (void*)hook_SetWatchdogTimer
     },
     {
-        .name = "ConnectController",
-        .offset = offsetof(EFI_BOOT_SERVICES, ConnectController),
-        .hook = (void*)hook_ConnectController
+        "ConnectController",
+        offsetof(EFI_BOOT_SERVICES, ConnectController),
+        (void*)hook_ConnectController
     },
     {
-        .name = "DisconnectController",
-        .offset = offsetof(EFI_BOOT_SERVICES, DisconnectController),
-        .hook = (void*)hook_DisconnectController
+        "DisconnectController",
+        offsetof(EFI_BOOT_SERVICES, DisconnectController),
+        (void*)hook_DisconnectController
     },
     {
-        .name = "OpenProtocol",
-        .offset = offsetof(EFI_BOOT_SERVICES, OpenProtocol),
-        .hook = (void*)hook_OpenProtocol
+        "OpenProtocol",
+        offsetof(EFI_BOOT_SERVICES, OpenProtocol),
+        (void*)hook_OpenProtocol
     },
     {
-        .name = "CloseProtocol",
-        .offset = offsetof(EFI_BOOT_SERVICES, CloseProtocol),
-        .hook = (void*)hook_CloseProtocol
+        "CloseProtocol",
+        offsetof(EFI_BOOT_SERVICES, CloseProtocol),
+        (void*)hook_CloseProtocol
     },
     {
-        .name = "OpenProtocolInformation",
-        .offset = offsetof(EFI_BOOT_SERVICES, OpenProtocolInformation),
-        .hook = (void*)hook_OpenProtocolInformation
+        "OpenProtocolInformation",
+        offsetof(EFI_BOOT_SERVICES, OpenProtocolInformation),
+        (void*)hook_OpenProtocolInformation
     },
     {
-        .name = "ProtocolsPerHandle",
-        .offset = offsetof(EFI_BOOT_SERVICES, ProtocolsPerHandle),
-        .hook = (void*)hook_ProtocolsPerHandle
+        "ProtocolsPerHandle",
+        offsetof(EFI_BOOT_SERVICES, ProtocolsPerHandle),
+        (void*)hook_ProtocolsPerHandle
     },
     {
-        .name = "LocateHandleBuffer",
-        .offset = offsetof(EFI_BOOT_SERVICES, LocateHandleBuffer),
-        .hook = (void*)hook_LocateHandleBuffer
+        "LocateHandleBuffer",
+        offsetof(EFI_BOOT_SERVICES, LocateHandleBuffer),
+        (void*)hook_LocateHandleBuffer
     },
     {
-        .name = "LocateProtocol",
-        .offset = offsetof(EFI_BOOT_SERVICES, LocateProtocol),
-        .hook = (void*)hook_LocateProtocol
+        "LocateProtocol",
+        offsetof(EFI_BOOT_SERVICES, LocateProtocol),
+        (void*)hook_LocateProtocol
     },
     {
-        .name = "InstallMultipleProtocolInterfaces",
-        .offset = offsetof(EFI_BOOT_SERVICES, InstallMultipleProtocolInterfaces),
-        .hook = (void*)hook_InstallMultipleProtocolInterfaces
+        "InstallMultipleProtocolInterfaces",
+        offsetof(EFI_BOOT_SERVICES, InstallMultipleProtocolInterfaces),
+        (void*)hook_InstallMultipleProtocolInterfaces
     },
     {
-        .name = "UninstallMultipleProtocolInterfaces",
-        .offset = offsetof(EFI_BOOT_SERVICES, UninstallMultipleProtocolInterfaces),
-        .hook = (void*)hook_UninstallMultipleProtocolInterfaces
+        "UninstallMultipleProtocolInterfaces",
+        offsetof(EFI_BOOT_SERVICES, UninstallMultipleProtocolInterfaces),
+        (void*)hook_UninstallMultipleProtocolInterfaces
     },
     {
-        .name = "CalculateCrc32",
-        .offset = offsetof(EFI_BOOT_SERVICES, CalculateCrc32),
-        .hook = (void*)hook_CalculateCrc32
+        "CalculateCrc32",
+        offsetof(EFI_BOOT_SERVICES, CalculateCrc32),
+        (void*)hook_CalculateCrc32
     },
     {
-        .name = "CopyMem",
-        .offset = offsetof(EFI_BOOT_SERVICES, CopyMem),
-        .hook = (void*)hook_CopyMem
+        "CopyMem",
+        offsetof(EFI_BOOT_SERVICES, CopyMem),
+        (void*)hook_CopyMem
     },
     {
-        .name = "SetMem",
-        .offset = offsetof(EFI_BOOT_SERVICES, SetMem),
-        .hook = (void*)hook_SetMem
+        "SetMem",
+        offsetof(EFI_BOOT_SERVICES, SetMem),
+        (void*)hook_SetMem
     },
     {
-        .name = "CreateEventEx",
-        .offset = offsetof(EFI_BOOT_SERVICES, CreateEventEx),
-        .hook = (void*)hook_CreateEventEx
+        "CreateEventEx",
+        offsetof(EFI_BOOT_SERVICES, CreateEventEx),
+        (void*)hook_CreateEventEx
     }
 };
 
