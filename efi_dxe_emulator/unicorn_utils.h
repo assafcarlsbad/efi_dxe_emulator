@@ -147,7 +147,7 @@ int get_x64_exception_registers(uc_engine *uc, struct x86_exception_state64 *sta
 int get_x64_debug_registers(uc_engine *uc, struct x86_debug_state64 *state);
 int get_eflags(uc_engine *uc, struct eflags *out_eflags);
 
-void log_unicorn_backtrace(uc_engine *uc, char *function_name, int type);
+void log_unicorn_backtrace(uc_engine *uc, const char *function_name, int type);
 
 /* macro allows us to globally remove the backtrace dump we have on the EFI services */
 #if defined(CONFIG_SHOW_BACKTRACE) && CONFIG_SHOW_BACKTRACE == 1
