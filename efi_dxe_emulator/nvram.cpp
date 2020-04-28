@@ -80,6 +80,7 @@
 #include <fcntl.h>
 #include <string>
 #include <memory>
+#include <assert.h>
 
 #include "logging.h"
 #include "config.h"
@@ -119,7 +120,7 @@ static int
 dump_nvram_cmd(const char *exp, uc_engine *uc)
 {
     auto cmd_tokens = tokenize(exp);
-    _ASSERT(cmd_tokens.at(0) == "nvram");
+    assert(cmd_tokens.at(0) == "nvram");
 
     std::string var_name;
     try
@@ -170,7 +171,7 @@ static int
 edit_variable_cmd(const char* exp, uc_engine* uc)
 {
     auto cmd_tokens = tokenize(exp);
-    _ASSERT(cmd_tokens.at(0) == "ev");
+    assert(cmd_tokens.at(0) == "ev");
     
     std::wstring var_name;
     try

@@ -450,7 +450,7 @@ int
 set_register_cmd(const char *exp, uc_engine *uc)
 {
     auto tokens = tokenize(exp);
-    _ASSERT(tokens.at(0) == "sr");
+    assert(tokens.at(0) == "sr");
 
     if (tokens.size() < 3)
     {
@@ -585,7 +585,7 @@ int
 signal_event_cmd(const char* exp, uc_engine* uc)
 {
     auto tokens = tokenize(exp);
-    _ASSERT(tokens.at(0) == "signal");
+    assert(tokens.at(0) == "signal");
 
     uint64_t event_id;
     try
@@ -607,7 +607,7 @@ int
 print_status_cmd(const char* exp, uc_engine* uc)
 {
     auto tokens = tokenize(exp);
-    _ASSERT(tokens.at(0) == "status");
+    assert(tokens.at(0) == "status");
 
     std::string token;
     try

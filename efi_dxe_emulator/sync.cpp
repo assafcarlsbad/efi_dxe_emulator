@@ -31,7 +31,7 @@ static int
 sync_bc_cmd(const char *exp, uc_engine *uc)
 {
     auto tokens = tokenize(exp);
-    //_ASSERT(tokens.at(0) == "bc");
+    //assert(tokens.at(0) == "bc");
 
     if (tokens.size() < 2)
     {

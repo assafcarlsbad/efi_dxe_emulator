@@ -72,6 +72,7 @@
 #include <sys/queue.h>
 #include <errno.h>
 #include <unicorn/unicorn.h>
+#include <assert.h>
 
 #include "pe_definitions.h"
 #include "efi_definitions.h"
@@ -193,7 +194,7 @@ static int
 add_bpt_cmd(const char *exp, uc_engine *uc)
 {
     auto tokens = tokenize(exp);
-    _ASSERT(tokens.at(0) == "bp");
+    assert(tokens.at(0) == "bp");
 
     errno = 0;
     
@@ -270,7 +271,7 @@ static int
 add_data_bpt_cmd(const char* exp, uc_engine* uc)
 {
     auto tokens = tokenize(exp);
-    _ASSERT(tokens.at(0) == "ba");
+    assert(tokens.at(0) == "ba");
 
     if (tokens.size() < 3)
     {
@@ -289,7 +290,7 @@ static int
 del_bpt_cmd(const char *exp, uc_engine *uc)
 {
     auto tokens = tokenize(exp);
-    _ASSERT(tokens.at(0) == "bpd");
+    assert(tokens.at(0) == "bpd");
 
     std::string token;
     try
