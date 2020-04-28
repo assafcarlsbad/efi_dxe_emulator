@@ -292,32 +292,6 @@ main(int argc, const char* argv[])
     err = uc_reg_write(uc, UC_X86_REG_RDX, &r_rdx);
     VERIFY_UC_OPERATION_RET(err, EXIT_FAILURE, "Failed to reset EFI SYSTEM TABLE register");
 
-    /*
-     * allow Unicorn to trace the whole code
-     * the reason for this is that we can't really introduce true breakpoints on the code
-     * so we trace every single code and fake breakpoints
-     * breakpoints are just addresses where we want to stop tracing and prompt a CLI
-     * else we just continue execution
-     */
-    uc_hook entrypoint_trace = 0;
-    err = uc_hook_add(uc,
-        &entrypoint_trace,
-        UC_HOOK_CODE,
-        hook_code,
-        NULL,
-        main_image->base_addr + main_image->entrypoint,
-        main_image->base_addr + main_image->entrypoint + main_image->buf_size);
-    VERIFY_UC_OPERATION_RET(err, EXIT_FAILURE, "Failed to add main Unicorn code hook.");
-    /*
-     * we also want to have a chance to trace the EFI services we are emulating
-     * there isn't much to trace since the EFI services functions inside Unicorn are just a breakpoint
-     * so we can return control to the emulator and emulate the functions
-     */
-    if (add_unicorn_hook(uc, UC_HOOK_CODE, hook_code, EFI_SYSTEM_TABLE_ADDRESS, EFI_SYSTEM_TABLE_ADDRESS + EFI_SYSTEM_TABLE_SIZE) != 0)
-    {
-        ERROR_MSG("Failed to add EFI services Unicorn code hook.");
-        return EXIT_FAILURE;
-    }
 
     OUTPUT_MSG("[+] Starting main image emulation...");
     err = uc_emu_start(uc, main_image->tramp_start, main_image->tramp_end, 0, 0);
