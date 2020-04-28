@@ -110,8 +110,10 @@ static int parse_nvram(uint8_t *buf, size_t buf_size);
 void
 register_nvram_cmds(uc_engine *uc)
 {
+#if !defined UNICORN_AFL
     add_user_cmd("nvram", NULL, dump_nvram_cmd, "Dump NVRAM contents.\n\nnvram", uc);
     add_user_cmd("ev", NULL, edit_variable_cmd, "Edit NVRAM variable.\n\nnvram", uc);
+#endif
 }
 
 #pragma endregion
