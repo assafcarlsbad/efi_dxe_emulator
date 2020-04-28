@@ -419,7 +419,7 @@ install_configuration_table(uc_engine* uc, uint64_t base_addr, size_t *out_count
 
     uc_err err = uc_mem_write(uc, base_addr, &conf_table, sizeof(conf_table));
     VERIFY_UC_OPERATION_RET(err, -1, "Failed to write configuration table");
-    *out_count = _countof(conf_table);
+    *out_count = sizeof(conf_table) / sizeof(conf_table[0]);
 
     return 0;
 }
