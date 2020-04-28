@@ -315,15 +315,6 @@ main(int argc, const char * argv[])
         return EXIT_FAILURE;
     }
     
-    /* write the machine serial number if configured */
-    if (g_config.serial_number != NULL)
-    {
-        if (write_serial_number(uc, g_config.serial_number) != 0)
-        {
-            ERROR_MSG("Failed to write machine serial number.");
-            return EXIT_FAILURE;
-        }
-    }
     OUTPUT_MSG("[+] Loading and mapping main EFI binary...");
     /* this is the main EFI binary we are going to emulate */
     if (load_and_map_main_image(g_config.target_file, uc) != 0)
