@@ -66,6 +66,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stddef.h>
 
 void * my_malloc(size_t size);
 void * my_calloc(size_t count, size_t size);

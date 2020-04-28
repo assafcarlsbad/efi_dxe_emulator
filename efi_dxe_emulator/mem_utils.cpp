@@ -66,7 +66,12 @@
 #include "mem_utils.h"
 
 #include <stdlib.h>
+#ifdef _WIN32
 #include <crtdbg.h>
+#else
+#define _RPTF0(rptno, msg)
+#endif // _WIN32
+
 
 void *
 my_malloc(size_t size)
