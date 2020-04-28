@@ -76,7 +76,6 @@
 
 #include "logging.h"
 #include "config.h"
-#include "debugger.h"
 #include "efi_definitions.h"
 #include "efi_boot_hooks.h"
 #include "efi_runtime_hooks.h"

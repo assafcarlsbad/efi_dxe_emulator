@@ -1,3 +1,4 @@
+#include <unicornafl/unicorn.h>
 #include <stdio.h>
 #include <getopt.h>
 #include <sys/stat.h>
@@ -10,7 +11,6 @@
 #include <errno.h>
 //#include <filesystem>
 #include "loader.h"
-#include <unicorn/unicorn.h>
 
 //#include <linenoise.h>
 //#include "ini.h"
@@ -27,7 +27,7 @@
 //#include "global_cmds.h"
 //#include "breakpoints.h"
 #include "loader.h"
-#include "unicorn_hooks.h"
+//#include "unicorn_hooks.h"
 //#include "protocols.h"
 #include "unicorn_macros.h"
 #include "unicorn_utils.h"
@@ -148,6 +148,32 @@ hook_unmapped_mem(uc_engine* uc, uc_mem_type type, uint64_t address, int size, i
     return 0;
 }
 
+/* Place the input at the right spot inside unicorn */
+static bool place_input_callback(
+    uc_engine* uc,
+    char* input,
+    size_t input_len,
+    uint32_t persistent_round,
+    void* data
+)
+{
+    uint32_t content_size = 0;
+    unsigned char* out_buf = nullptr;
+    auto nvram_var = lookup_nvram_var(L"AcpiGlobalVariable", nullptr, &content_size, &out_buf);
+    if (nvram_var)
+    {
+        free(nvram_var->data);
+        nvram_var->data = static_cast<uint8_t *>(my_malloc(input_len));
+        nvram_var->data_size = input_len;
+    }
+    else
+    {
+        ERROR_MSG("Variable %s was not found in NVRAM dump", "AcpiGlobalVariable");
+    }
+
+    return true;
+}
+
 int
 main(int argc, const char* argv[])
 {
@@ -159,6 +185,8 @@ main(int argc, const char* argv[])
 
     const char * target_file = argv[1];
     const char * nvram_file = argv[2];
+    const char * variable_name = argv[3];
+    const char* variable_data_file = argv[4];
 
     /* and now start the party */
 
@@ -250,7 +278,16 @@ main(int argc, const char* argv[])
 
 
     OUTPUT_MSG("[+] Starting main image emulation...");
-    uc_afl_ret afl_err = uc_afl_start(uc, main_image->tramp_start, main_image->tramp_end, 0, 0);
+    uc_afl_fuzz(
+        uc,
+        variable_data_file,
+        place_input_callback,
+        main_image->tramp_end,
+        1,
+        NULL,
+        false,
+        1,
+        NULL);
     VERIFY_UC_OPERATION_RET(err, EXIT_FAILURE, "Failed to start Unicorn emulation");
 
     OUTPUT_MSG("[+] All done, main image emulation complete.");
