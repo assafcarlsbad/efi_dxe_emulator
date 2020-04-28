@@ -75,7 +75,6 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="..\efi_dxe_emulator\breakpoints.cpp" />
     <ClCompile Include="..\efi_dxe_emulator\capstone_utils.cpp" />
     <ClCompile Include="..\efi_dxe_emulator\efi_boot_hooks.cpp" />
     <ClCompile Include="..\efi_dxe_emulator\efi_runtime_hooks.cpp" />
@@ -87,12 +86,10 @@
     <ClCompile Include="..\efi_dxe_emulator\nvram.cpp" />
     <ClCompile Include="..\efi_dxe_emulator\protocols.cpp" />
     <ClCompile Include="..\efi_dxe_emulator\string_ops.cpp" />
-    <ClCompile Include="..\efi_dxe_emulator\unicorn_hooks.cpp" />
     <ClCompile Include="..\efi_dxe_emulator\unicorn_utils.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\efi_dxe_emulator\breakpoints.h" />
     <ClInclude Include="..\efi_dxe_emulator\capstone_utils.h" />
     <ClInclude Include="..\efi_dxe_emulator\cmds.h" />
     <ClInclude Include="..\efi_dxe_emulator\config.h" />
@@ -110,7 +107,6 @@
     <ClInclude Include="..\efi_dxe_emulator\protocols.h" />
     <ClInclude Include="..\efi_dxe_emulator\string_ops.h" />
     <ClInclude Include="..\efi_dxe_emulator\types.h" />
-    <ClInclude Include="..\efi_dxe_emulator\unicorn_hooks.h" />
     <ClInclude Include="..\efi_dxe_emulator\unicorn_macros.h" />
     <ClInclude Include="..\efi_dxe_emulator\unicorn_utils.h" />
   </ItemGroup>
