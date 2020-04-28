@@ -123,6 +123,7 @@
       <Verbose>true</Verbose>
       <AdditionalOptions>-fpermissive -Wno-pedantic -fshort-wchar %(AdditionalOptions)</AdditionalOptions>
       <CppLanguageStandard>c++17</CppLanguageStandard>
+      <PreprocessorDefinitions>UNICORN_AFL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>unicornafl; pthread; capstone</LibraryDependencies>
@@ -135,6 +136,7 @@
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
       <AdditionalOptions>-fpermissive -Wno-pedantic -fshort-wchar %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>UNICORN_AFL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -144,6 +146,7 @@
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
       <AdditionalOptions>-fpermissive -Wno-pedantic -fshort-wchar %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>UNICORN_AFL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
@@ -153,6 +156,7 @@
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
       <AdditionalOptions>-fpermissive -Wno-pedantic -fshort-wchar %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>UNICORN_AFL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -162,6 +166,7 @@
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
       <AdditionalOptions>-fpermissive -Wno-pedantic -fshort-wchar %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>UNICORN_AFL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -171,6 +176,7 @@
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
       <AdditionalOptions>-fpermissive -Wno-pedantic -fshort-wchar %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>UNICORN_AFL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
@@ -180,6 +186,7 @@
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
       <AdditionalOptions>-fpermissive -Wno-pedantic -fshort-wchar %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>UNICORN_AFL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
@@ -189,6 +196,7 @@
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
       <AdditionalOptions>-fpermissive -Wno-pedantic -fshort-wchar %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>UNICORN_AFL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
