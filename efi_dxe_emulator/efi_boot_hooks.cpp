@@ -374,7 +374,7 @@ install_boot_services(uc_engine *uc, uint64_t base_addr, size_t *out_count)
     uint64_t hooks_addr = base_addr + sizeof(EFI_BOOT_SERVICES);
     
     size_t array_size = sizeof(boot_hooks) / sizeof(*boot_hooks);
-    for (int i = 0; i < array_size; i++)
+    for (unsigned int i = 0; i < array_size; i++)
     {
         *(uint64_t*)((char*)&boot_table + boot_hooks[i].offset) = (uint64_t)(hooks_addr + hook_size * i);
     }
@@ -385,7 +385,7 @@ install_boot_services(uc_engine *uc, uint64_t base_addr, size_t *out_count)
     /* XXX: mem leak on ret_bytes but we will exit app anyway after this */
     VERIFY_UC_OPERATION_RET(err, 1, "Failed to write Boot Services hooks");
     
-    for (int i = 0; i < array_size; i++)
+    for (unsigned int i = 0; i < array_size; i++)
     {
         boot_hooks[i].addr = hooks_addr + hook_size * i;
         add_unicorn_hook(uc, UC_HOOK_CODE, boot_hooks[i].hook, boot_hooks[i].addr, boot_hooks[i].addr);
@@ -428,7 +428,7 @@ char *
 lookup_boot_services_table(int offset)
 {
     size_t array_size = sizeof(boot_hooks) / sizeof(*boot_hooks);
-    for (int i = 0; i < array_size; i++)
+    for (unsigned int i = 0; i < array_size; i++)
     {
         if (boot_hooks[i].offset == offset)
         {
@@ -442,7 +442,7 @@ uint64_t
 lookup_boot_services_table(std::string_view name)
 {
     size_t array_size = sizeof(boot_hooks) / sizeof(*boot_hooks);
-    for (int i = 0; i < array_size; i++)
+    for (unsigned int i = 0; i < array_size; i++)
     {
         if (name == boot_hooks[i].name)
         {
@@ -1596,7 +1596,7 @@ hook_CopyMem(uc_engine *uc, uint64_t address, uint32_t size, void *user_data)
     }
 #if 0
     DEBUG_MSG("Source contents to be copied:");
-    for (int i = 0; i < Length; i++)
+    for (unsigned int i = 0; i < Length; i++)
     {
         printf("%02X ", copyin[i]);
     }
