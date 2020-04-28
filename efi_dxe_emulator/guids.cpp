@@ -24,7 +24,7 @@ struct guid_comparator
 static std::map<EFI_GUID, std::string, guid_comparator> guid_db;
 
 int
-load_guids(char* guids_file)
+load_guids(const char* guids_file)
 {
     try
     {

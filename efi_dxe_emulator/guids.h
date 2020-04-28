@@ -3,7 +3,7 @@
 #include "efi_definitions.h"
 
 int
-load_guids(char* guids_file);
+load_guids(const char* guids_file);
 
 const char*
 get_guid_friendly_name(const EFI_GUID& g);
