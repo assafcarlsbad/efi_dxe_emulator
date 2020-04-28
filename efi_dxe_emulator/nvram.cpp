@@ -92,6 +92,8 @@
 #include <iomanip>
 #include <sstream>
 
+static_assert(sizeof(wchar_t) == sizeof(CHAR16), "wchar_t and CHAR16 are not compatible");
+
 uint8_t *g_nvram_buf;
 size_t g_nvram_buf_size;
 
@@ -343,7 +345,7 @@ parse_nvram(uint8_t *buf, size_t buf_size)
 }
 
 int
-find_vss_var(uint8_t *store_buf, uint32_t store_size, CHAR16 *var_name, EFI_GUID *guid, uint32_t *content_size, unsigned char **out_buf)
+find_vss_var(uint8_t *store_buf, uint32_t store_size, wchar_t *var_name, EFI_GUID *guid, uint32_t *content_size, unsigned char **out_buf)
 {
     uint8_t *store_ptr = store_buf;
     while (store_ptr < store_buf + store_size)
@@ -354,7 +356,7 @@ find_vss_var(uint8_t *store_buf, uint32_t store_size, CHAR16 *var_name, EFI_GUID
             if (var_header->State == NVRAM_VSS_VARIABLE_HEADER_VALID || var_header->State == NVRAM_VSS_VARIABLE_ADDED)
             {
                 EFI_GUID *header_guid = &var_header->VendorGuid;
-                CHAR16 *name_ptr = (CHAR16*)((char*)var_header + sizeof(VSS_VARIABLE_HEADER));
+                wchar_t *name_ptr = (wchar_t*)((char*)var_header + sizeof(VSS_VARIABLE_HEADER));
                 if (memcmp(guid, header_guid, sizeof(EFI_GUID)) == 0 &&
                     memcmp(var_name, name_ptr, var_header->NameSize) == 0)
                 {
@@ -379,7 +381,7 @@ find_vss_var(uint8_t *store_buf, uint32_t store_size, CHAR16 *var_name, EFI_GUID
 }
 
 struct nvram_variables *
-lookup_nvram_var(const CHAR16 *var_name, EFI_GUID *guid, uint32_t *content_size, unsigned char **out_buf)
+lookup_nvram_var(const wchar_t *var_name, EFI_GUID *guid, uint32_t *content_size, unsigned char **out_buf)
 {
     struct nvram_variables* entry = NULL;
     TAILQ_FOREACH(entry, &g_nvram_vars, entries)
@@ -400,7 +402,7 @@ lookup_nvram_var(const CHAR16 *var_name, EFI_GUID *guid, uint32_t *content_size,
 }
 
 int
-del_nvram_var(const CHAR16* var_name)
+del_nvram_var(const wchar_t* var_name)
 {
     struct nvram_variables* entry = NULL;
     TAILQ_FOREACH(entry, &g_nvram_vars, entries)
@@ -498,7 +500,7 @@ retrieve_nvram_vars(void)
                     {
                         if (var_header->State == NVRAM_VSS_VARIABLE_HEADER_VALID || var_header->State == NVRAM_VSS_VARIABLE_ADDED)
                         {
-                            CHAR16 *name_ptr = (CHAR16*)((char*)var_header + sizeof(VSS_VARIABLE_HEADER));
+                            wchar_t *name_ptr = (wchar_t*)((char*)var_header + sizeof(VSS_VARIABLE_HEADER));
                             struct nvram_variables *cur_entry = NULL;
                             int found = 0;
                             TAILQ_FOREACH(cur_entry, &g_nvram_vars, entries)
@@ -561,9 +563,9 @@ retrieve_nvram_vars(void)
                 }
                 else
                 {
-                    // Name is stored as UCS2 string of CHAR16s
-                    var_name = reinterpret_cast<CHAR16*>(name_ptr);
-                    name_size = (var_name.length() + 1) * sizeof(CHAR16);
+                    // Name is stored as UCS2 string of wchar_ts
+                    var_name = reinterpret_cast<wchar_t*>(name_ptr);
+                    name_size = (var_name.length() + 1) * sizeof(wchar_t);
                 }
 
                 // Get entry GUID
@@ -587,7 +589,7 @@ retrieve_nvram_vars(void)
                 memcpy(&new_entry->guid, &guid, sizeof(EFI_GUID));
                 if (var_name.length() <= sizeof(new_entry->name))
                 {
-                    memcpy(new_entry->name, var_name.c_str(), var_name.length() * 2 + sizeof(CHAR16));
+                    memcpy(new_entry->name, var_name.c_str(), var_name.length() * 2 + sizeof(wchar_t));
                 }
                 else
                 {
