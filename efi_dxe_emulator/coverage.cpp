@@ -26,7 +26,7 @@ block_size_workaround(uc_engine* uc, uint64_t address, uint32_t size)
     if (size == 0)
     {
         /* Looks like a Unicorn bug: in some cases the block's size is reported as 0.
-         * As a walkaround, we'll disassemble the code until we reach a 'CALL' instruction
+         * As a workaround, we'll disassemble the code until we reach a 'CALL' instruction
          * and compute the size accordingly. */
         uint64_t bb_end = address;
         cs_insn* insn = nullptr;
