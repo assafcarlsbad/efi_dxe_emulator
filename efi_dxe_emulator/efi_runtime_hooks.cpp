@@ -108,74 +108,74 @@ struct _runtime_hooks
 
 struct _runtime_hooks runtime_hooks[] = {
     {
-        .name = "GetTime",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, GetTime),
-        .hook = (void*)hook_GetTime
+        "GetTime",
+        offsetof(EFI_RUNTIME_SERVICES, GetTime),
+        (void*)hook_GetTime
     },
     {
-        .name = "SetTime",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, SetTime),
-        .hook = (void*)hook_SetTime
+        "SetTime",
+        offsetof(EFI_RUNTIME_SERVICES, SetTime),
+        (void*)hook_SetTime
     },
     {
-        .name = "GetWakeupTime",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, GetWakeupTime),
-        .hook = hook_GetWakeupTime
+        "GetWakeupTime",
+        offsetof(EFI_RUNTIME_SERVICES, GetWakeupTime),
+        hook_GetWakeupTime
     },
     {
-        .name = "SetWakeupTime",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, SetWakeupTime),
-        .hook = hook_SetWakeupTime
+        "SetWakeupTime",
+        offsetof(EFI_RUNTIME_SERVICES, SetWakeupTime),
+        hook_SetWakeupTime
     },
     {
-        .name = "SetVirtualAddressMap",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, SetVirtualAddressMap),
-        .hook = hook_SetVirtualAddressMap
+        "SetVirtualAddressMap",
+        offsetof(EFI_RUNTIME_SERVICES, SetVirtualAddressMap),
+        hook_SetVirtualAddressMap
     },
     {
-        .name = "ConvertPointer",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, ConvertPointer),
-        .hook = hook_ConvertPointer
+        "ConvertPointer",
+        offsetof(EFI_RUNTIME_SERVICES, ConvertPointer),
+        hook_ConvertPointer
     },
     {
-        .name = "GetVariable",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, GetVariable),
-        .hook = hook_GetVariable
+        "GetVariable",
+        offsetof(EFI_RUNTIME_SERVICES, GetVariable),
+        hook_GetVariable
     },
     {
-        .name = "GetNextVariableName",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, GetNextVariableName),
-        .hook = hook_GetNextVariableName
+        "GetNextVariableName",
+        offsetof(EFI_RUNTIME_SERVICES, GetNextVariableName),
+        hook_GetNextVariableName
     },
     {
-        .name = "SetVariable",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, SetVariable),
-        .hook = hook_SetVariable
+        "SetVariable",
+        offsetof(EFI_RUNTIME_SERVICES, SetVariable),
+        hook_SetVariable
     },
     {
-        .name = "GetNextHighMonotonicCount",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, GetNextHighMonotonicCount),
-        .hook = hook_GetNextHighMonotonicCount
+        "GetNextHighMonotonicCount",
+        offsetof(EFI_RUNTIME_SERVICES, GetNextHighMonotonicCount),
+        hook_GetNextHighMonotonicCount
     },
     {
-        .name = "ResetSystem",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, ResetSystem),
-        .hook = hook_ResetSystem
+        "ResetSystem",
+        offsetof(EFI_RUNTIME_SERVICES, ResetSystem),
+        hook_ResetSystem
     },
     {
-        .name = "UpdateCapsule",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, UpdateCapsule),
-        .hook = hook_UpdateCapsule
+        "UpdateCapsule",
+        offsetof(EFI_RUNTIME_SERVICES, UpdateCapsule),
+        hook_UpdateCapsule
     },
     {
-        .name = "QueryCapsuleCapabilities",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, QueryCapsuleCapabilities),
-        .hook = hook_QueryCapsuleCapabilities
+        "QueryCapsuleCapabilities",
+        offsetof(EFI_RUNTIME_SERVICES, QueryCapsuleCapabilities),
+        hook_QueryCapsuleCapabilities
     },
     {
-        .name = "QueryVariableInfo",
-        .offset = offsetof(EFI_RUNTIME_SERVICES, QueryVariableInfo),
-        .hook = hook_QueryVariableInfo
+        "QueryVariableInfo",
+        offsetof(EFI_RUNTIME_SERVICES, QueryVariableInfo),
+        hook_QueryVariableInfo
     }
 };
 
