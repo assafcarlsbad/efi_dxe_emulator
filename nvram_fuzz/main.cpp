@@ -50,6 +50,44 @@ header(void)
     );
 }
 
+struct unicorn_hooks
+{
+    TAILQ_ENTRY(unicorn_hooks) entries;
+    uc_hook hook;
+    uint64_t begin;
+    uint64_t end;
+    int type;
+};
+
+TAILQ_HEAD(unicorn_hooks_tailq, unicorn_hooks);
+
+struct unicorn_hooks_tailq g_hooks = TAILQ_HEAD_INITIALIZER(g_hooks);
+
+/*
+ * helper function to add a new Unicorn hook and bookkeep hooks in our internal structure
+ *
+ */
+int
+add_unicorn_hook(uc_engine* uc, int type, void* callback, uint64_t begin, uint64_t end)
+{
+    struct unicorn_hooks* new_hook = NULL;
+    new_hook = static_cast<struct unicorn_hooks*>(my_malloc(sizeof(struct unicorn_hooks)));
+    new_hook->begin = begin;
+    new_hook->end = end;
+    new_hook->type = type;
+
+    if (uc_hook_add(uc, &new_hook->hook, type, callback, NULL, begin, end) != UC_ERR_OK)
+    {
+        ERROR_MSG("Failed to add Unicorn hook.");
+        free(new_hook);
+        return 1;
+    }
+
+    TAILQ_INSERT_TAIL(&g_hooks, new_hook, entries);
+
+    return 0;
+}
+
 void
 help(const char* name)
 {
@@ -62,6 +100,52 @@ help(const char* name)
         "-t EFI binary: EFI binary to emulate\n"
         "-n nvram file: path to NVRAM file extracted by UEFITool\n"
         "", name);
+}
+
+void
+hook_interrupt(uc_engine* uc, uint32_t intno, void* user_data)
+{
+    DEBUG_MSG("Hit interrupt nr %d", intno);
+    uint64_t r_rsp = 0;
+    uc_reg_read(uc, UC_X86_REG_RSP, &r_rsp);
+    uint64_t backtrace = 0;
+    uc_mem_read(uc, r_rsp, &backtrace, sizeof(backtrace));
+    DEBUG_MSG("Backtrace 0x%llx", backtrace);
+    uint64_t r_rip = backtrace;
+    uc_reg_write(uc, UC_X86_REG_RIP, &r_rip);
+}
+
+void
+hook_code(uc_engine* uc, uint64_t address, uint32_t size, void* user_data)
+{
+    DEBUG_MSG("Hit code at 0x%llx", address);
+}
+
+bool
+hook_unmapped_mem(uc_engine* uc, uc_mem_type type, uint64_t address, int size, int64_t value, void* user_data)
+{
+    switch (type) {
+    case UC_MEM_READ_UNMAPPED:
+        ERROR_MSG("Read from invalid memory at 0x%llx, data size = %u", address, size);
+        break;
+    case UC_MEM_WRITE_UNMAPPED:
+        ERROR_MSG("Write to invalid memory at 0x%llx, data size = %u, data value = 0x%llx", address, size, value);
+        break;
+    case UC_MEM_FETCH_PROT:
+        ERROR_MSG("Fetch from non-executable memory at 0x%llx", address);
+        break;
+    case UC_MEM_WRITE_PROT:
+        ERROR_MSG("Write to non-writeable memory at 0x%llx, data size = %u, data value = 0x%llx", address, size, value);
+        break;
+    case UC_MEM_READ_PROT:
+        ERROR_MSG("Read from non-readable memory at 0x%llx, data size = %u", address, size);
+        break;
+    default:
+        ERROR_MSG("UC_HOOK_MEM_INVALID type: %d at 0x%llx", type, address);
+        break;
+    }
+    DEBUG_MSG("Unmapped mem hit 0x%llx", address);
+    return 0;
 }
 
 int
