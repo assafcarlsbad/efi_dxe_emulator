@@ -70,7 +70,10 @@
 #include "efi_definitions.h"
 
 void print_unicode_string(CHAR16 *Source);
+#ifdef _WIN32
 char * strsep(char **stringp, const char *delim);
+#endif // _WIN32
+
 size_t strlcpy(char* dst, const char* src, size_t siz);
 std::string to_string(const std::wstring& wstr);
 std::wstring to_wstring(const std::string& str);
