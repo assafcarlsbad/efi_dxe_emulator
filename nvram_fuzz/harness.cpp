@@ -236,26 +236,6 @@ main(int argc, const char* argv[])
         return EXIT_FAILURE;
     }
 
-    uint64_t total_images = 0;
-    struct bin_image* tmp_image = NULL;
-    TAILQ_FOREACH(tmp_image, &g_images, entries)
-    {
-        total_images++;
-    }
-    OUTPUT_MSG("[+] Total images loaded: %llu", total_images);
-
-    /* start emulating the secondary images so they install whatever protocols they support */
-    OUTPUT_MSG("[+] Starting secondary images emulation...");
-    struct bin_image* secondary_image = NULL;
-    TAILQ_FOREACH(secondary_image, &g_images, entries)
-    {
-        if (secondary_image->main == 0)
-        {
-            err = uc_emu_start(uc, secondary_image->tramp_start, secondary_image->tramp_end, 0, 0);
-            VERIFY_UC_OPERATION_RET(err, EXIT_FAILURE, "Failed to start Unicorn emulation for %s", secondary_image->file_path);
-        }
-    }
-
     /* reset Unicorn registers to a clean state before starting emulation of main image */
     initialize_unicorn_registers(uc);
 
