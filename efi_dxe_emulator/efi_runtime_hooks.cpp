@@ -644,7 +644,7 @@ hook_SetVariable(uc_engine *uc, uint64_t address, uint32_t size, void *user_data
     r_rsp += 5 * sizeof(uint64_t);
     uc_mem_read(uc, r_rsp, &r_data, sizeof(r_data));
 
-    std::vector<std::byte> var_data(r_r9);
+    std::vector<uint8_t> var_data(r_r9);
     uc_mem_read(uc, r_data, var_data.data(), r_r9);
 
     if (r_r9 == 0)
