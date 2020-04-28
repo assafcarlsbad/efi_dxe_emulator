@@ -124,7 +124,7 @@ initialize_unicorn_registers(uc_engine *uc)
     uint64_t vals[sizeof(x86_64_regs)] = {0};
     void *ptrs[sizeof(x86_64_regs)] = {0};
     
-    for (int i = 0; i < sizeof(x86_64_regs); i++)
+    for (unsigned int i = 0; i < sizeof(x86_64_regs); i++)
     {
         ptrs[i] = &vals[i];
     }
@@ -286,7 +286,7 @@ get_x64_registers(uc_engine *uc, struct x86_thread_state64 *state)
     uint64_t vals[sizeof(x86_64_regs)] = {0};
     void *ptrs[sizeof(x86_64_regs)] = {0};
     
-    for (int i = 0; i < sizeof(x86_64_regs); i++)
+    for (unsigned int i = 0; i < sizeof(x86_64_regs); i++)
     {
         ptrs[i] = &vals[i];
     }
@@ -345,7 +345,7 @@ get_x64_debug_registers(uc_engine *uc, struct x86_debug_state64 *state)
     uint64_t vals[sizeof(regs)] = { 0 };
     void *ptrs[sizeof(regs)] = {0};
     
-    for (int i = 0; i < sizeof(regs); i++)
+    for (unsigned int i = 0; i < sizeof(regs); i++)
     {
         ptrs[i] = &vals[i];
     }
