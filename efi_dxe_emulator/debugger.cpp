@@ -76,6 +76,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <string>
+#include <stdexcept>
 
 #include "pe_definitions.h"
 #include "efi_definitions.h"
@@ -92,7 +93,6 @@
 #include "mem_utils.h"
 #include "string_ops.h"
 #include "sync.h"
-#include <stdexcept>
 #include "events.h"
 
 extern EFI_SYSTEM_TABLE g_efi_table;
