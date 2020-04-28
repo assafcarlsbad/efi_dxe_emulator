@@ -77,6 +77,7 @@
   <ItemGroup>
     <ClCompile Include="..\efi_dxe_emulator\efi_boot_hooks.cpp" />
     <ClCompile Include="..\efi_dxe_emulator\efi_runtime_hooks.cpp" />
+    <ClCompile Include="..\efi_dxe_emulator\guids.cpp" />
     <ClCompile Include="..\efi_dxe_emulator\loader.cpp" />
     <ClCompile Include="..\efi_dxe_emulator\logging.cpp" />
     <ClCompile Include="..\efi_dxe_emulator\mem_utils.cpp" />
