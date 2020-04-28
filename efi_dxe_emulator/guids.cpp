@@ -1,7 +1,12 @@
 #include "guids.h"
 #include "efi_definitions.h"
 
+#ifdef _WIN32
 #include <csv.h>
+#else
+#include <libfccp/csv.h>
+#endif // _WIN32
+
 #include <string>
 #include <map>
 
