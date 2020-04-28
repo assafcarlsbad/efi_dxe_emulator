@@ -171,7 +171,7 @@ write_serial_number(uc_engine *uc, char *serial_number)
  * type = 1 : log to file
  */
 void
-log_unicorn_backtrace(uc_engine *uc, char *function_name, int type)
+log_unicorn_backtrace(uc_engine *uc, const char *function_name, int type)
 {
     uc_err err = UC_ERR_OK;
     
