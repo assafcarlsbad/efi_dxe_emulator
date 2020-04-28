@@ -65,16 +65,6 @@
 
 #include <stdint.h>
 
-// Basic types
-typedef uint8_t UINT8;
-typedef uint16_t UINT16;
-typedef uint32_t UINT32;
-typedef uint64_t UINT64;
-typedef uint16_t WORD;
-typedef uint8_t BYTE;
-typedef uint64_t ULONGLONG;
-typedef uint16_t USHORT;
-
 #define IMAGE_DOS_SIGNATURE                 0x5A4D      // MZ
 #define IMAGE_OS2_SIGNATURE                 0x454E      // NE
 #define IMAGE_OS2_SIGNATURE_LE              0x454C      // LE
