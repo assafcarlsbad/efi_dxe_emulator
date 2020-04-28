@@ -170,7 +170,6 @@ typedef UINT64 PHYSICAL_ADDRESS;
 
 typedef struct _LIST_ENTRY LIST_ENTRY;
 
-typedef va_list VA_LIST;
 typedef UINTN *BASE_LIST;
 typedef UINTN RETURN_STATUS;
 typedef GUID EFI_GUID;

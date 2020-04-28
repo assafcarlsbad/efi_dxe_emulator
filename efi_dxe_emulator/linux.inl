@@ -15,3 +15,5 @@ typedef struct _GUID {
     unsigned short Data3;
     unsigned char  Data4[8];
 } GUID;
+
+typedef __builtin_va_list VA_LIST;
