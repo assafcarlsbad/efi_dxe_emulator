@@ -432,13 +432,13 @@ map_image_to_emulator(uc_engine *uc, struct bin_image *target_image)
     uc_err err = UC_ERR_OK;
 
     /* map header */
-    size_t full_hdr_size = sizeof(IMAGE_DOS_HEADER) + sizeof(IMAGE_NT_HEADERS64);
+    size_t full_hdr_size = sizeof(EFI_IMAGE_DOS_HEADER) + sizeof(EFI_IMAGE_NT_HEADERS64);
     err = uc_mem_write(uc, target_image->mapped_addr, (void*)target_image->buf, full_hdr_size);
     VERIFY_UC_OPERATION_RET(err, -1, "Failed to write to Unicorn memory")
     
     DEBUG_MSG("Number of sections to map is %d.", target_image->nr_sections);
-    unsigned char *section_start = target_image->header + sizeof(IMAGE_NT_HEADERS64);
-    IMAGE_SECTION_HEADER *section = (IMAGE_SECTION_HEADER*)section_start;
+    unsigned char *section_start = target_image->header + sizeof(EFI_IMAGE_NT_HEADERS64);
+    EFI_IMAGE_SECTION_HEADER *section = (EFI_IMAGE_SECTION_HEADER*)section_start;
     for (int i = 0; i < target_image->nr_sections; i++)
     {
         DEBUG_MSG("Mapping section name %s @ 0x%llx VirtualSize: 0x%x RawSize: 0x%x", section->Name, target_image->mapped_addr + section->VirtualAddress, section->Misc.VirtualSize, section->SizeOfRawData);
@@ -449,7 +449,7 @@ map_image_to_emulator(uc_engine *uc, struct bin_image *target_image)
             ERROR_MSG("Failed to write section %s into emulator memory: %s (%d)", section->Name, uc_strerror(err), err);
             return -1;
         }
-        section = (IMAGE_SECTION_HEADER*)((char*)section + sizeof(IMAGE_SECTION_HEADER));
+        section = (EFI_IMAGE_SECTION_HEADER*)((char*)section + sizeof(EFI_IMAGE_SECTION_HEADER));
     }
 
     return 0;
@@ -486,9 +486,9 @@ fix_relocations(uc_engine *uc, struct bin_image *image)
     while (current_reloc < reloc_end)
     {
         /* the location of the relocation block header */
-        IMAGE_BASE_RELOCATION *reloc_hdr = (IMAGE_BASE_RELOCATION*)(image->buf + image->relocation_info.VirtualAddress);
+        EFI_IMAGE_BASE_RELOCATION *reloc_hdr = (EFI_IMAGE_BASE_RELOCATION*)(image->buf + image->relocation_info.VirtualAddress);
         DEBUG_MSG("Relocation info: 0x%x 0x%x", reloc_hdr->VirtualAddress, reloc_hdr->SizeOfBlock);
-        int total_entries = (reloc_hdr->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION))/sizeof(uint16_t);
+        int total_entries = (reloc_hdr->SizeOfBlock - sizeof(EFI_IMAGE_BASE_RELOCATION))/sizeof(uint16_t);
         DEBUG_MSG("Total relocation entries: %d", total_entries);
         uint16_t *entry_start = (uint16_t*)((char*)reloc_hdr + 8);
         for (int i = 0; i < total_entries; i++)
