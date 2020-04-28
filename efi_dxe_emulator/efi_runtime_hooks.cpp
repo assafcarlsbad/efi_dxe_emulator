@@ -68,6 +68,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
+#include <algorithm>
 
 #include "pe_definitions.h"
 #include "efi_definitions.h"
@@ -422,7 +423,7 @@ hook_GetVariable(uc_engine *uc, uint64_t address, uint32_t size, void *user_data
         /* We need to set Attributes (ignore for now), DataSize, and Data */
         
         /* write contents into Unicorn memory */
-        content_size = min(content_size, DataSize);
+        content_size = std::min<>(content_size, DataSize);
         if (uc_mem_write(uc, Data, var_buf, content_size) != UC_ERR_OK)
         {
             ERROR_MSG("Error writing Data.");
