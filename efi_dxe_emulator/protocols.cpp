@@ -74,7 +74,6 @@
 #include "pe_definitions.h"
 #include "logging.h"
 #include "config.h"
-#include "debugger.h"
 #include "unicorn_hooks.h"
 #include "string_ops.h"
 #include "mem_utils.h"
