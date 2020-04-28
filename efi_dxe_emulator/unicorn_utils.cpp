@@ -137,36 +137,6 @@ initialize_unicorn_registers(uc_engine *uc)
 }
 
 /*
- * write Mac machine serial number into Unicorn memory (fixed physical memory address on real machines)
- */
-int
-write_serial_number(uc_engine *uc, char *serial_number)
-{
-    DEBUG_MSG("Writing machine serial number to Unicorn memory...");
-    
-    uc_err err = UC_ERR_OK;
-    
-    /* allocate physical memory area */
-    /* used for machine serial number for now */
-    /* XXX: move back to allocate_emulation_mem() if this area needed by something else */
-    err = uc_mem_map(uc, 0xffff0000, 1024 * 1024, UC_PROT_ALL);
-    VERIFY_UC_OPERATION_RET(err, 1, "Failed to allocate Unicorn physical memory area");
-    
-    size_t serial_length = strlen(serial_number);
-    /* we need to add two digits, 0x20 and 0xFF (serial always ends in 0xFF (end marker?)) */
-    serial_length += 3;
-    
-    auto serial_to_write = static_cast<char *>(my_calloc(1, serial_length));
-    snprintf(serial_to_write, serial_length, "%s\x20\xFF", serial_number);
-    
-    err = uc_mem_write(uc, 0xffffff08, serial_to_write, serial_length-1);
-    VERIFY_UC_OPERATION_RET(err, 1, "Failed to write serial number to physical memory area.");
-    free(serial_to_write);
-    
-    return 0;
-}
-
-/*
  * type = 0 : log to console
  * type = 1 : log to file
  */
