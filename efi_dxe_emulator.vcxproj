@@ -184,6 +184,10 @@
     <ClInclude Include="include\sys\queue.h" />
     <ClInclude Include="include\unistd.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="efi_dxe_emulator\linux.inl" />
+    <None Include="efi_dxe_emulator\windows.inl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

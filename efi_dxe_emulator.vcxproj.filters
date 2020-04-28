@@ -180,4 +180,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="efi_dxe_emulator\windows.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="efi_dxe_emulator\linux.inl">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
