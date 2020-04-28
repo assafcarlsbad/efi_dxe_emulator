@@ -151,101 +151,14 @@ hook_unmapped_mem(uc_engine* uc, uc_mem_type type, uint64_t address, int size, i
 int
 main(int argc, const char* argv[])
 {
-    header();
-
-    // required structure for long options
-    static struct option long_options[] = {
-        { "verbose", no_argument, NULL, 'v' },
-        { "target", required_argument, NULL, 't' },
-        { "ini", required_argument, NULL, 'i' },
-        { "nvram", required_argument, NULL, 'n' },
-        { "guids", required_argument, NULL, 'g' },
-        { "hexedit", required_argument, NULL, 'x' },
-        { NULL, 0, NULL, 0 }
-    };
-    int option_index = 0;
-    int c = 0;
-
-    char* target_file = NULL;
-    char* nvram_file = NULL;
-    char* guids_file = NULL;
-    int verbose_mode = 0;
-    char* ini_file = NULL;
-    char* hex_editor = NULL;
-
-    // process command line options
-    while ((c = getopt_long(argc, (char* const*)argv, "vt:n:g:i:x:", long_options, &option_index)) != -1)
-    {
-        switch (c)
-        {
-        case 'v':
-            verbose_mode = 1;
-            break;
-        case 't':
-            target_file = optarg;
-            break;
-        case 'n':
-            nvram_file = optarg;
-            break;
-        case 'g':
-            guids_file = optarg;
-            break;
-        case 'i':
-            ini_file = optarg;
-            break;
-        case 'x':
-            hex_editor = optarg;
-            break;
-        default:
-            break;
-        }
-    }
-
-    set_log_level(verbose_mode);
-
     if (argc < 2)
     {
         help(argv[0]);
         return EXIT_FAILURE;
     }
 
-    /* initialize the tailq that might hold protocols to load */
-    TAILQ_INIT(&g_config.protos);
-
-    /* explicit parameters should override the INI file */
-    if (target_file) g_config.target_file = target_file;
-    if (nvram_file) g_config.nvram_file = nvram_file;
-    if (guids_file) g_config.guids_file = guids_file;
-    if (hex_editor) g_config.hex_editor = hex_editor;
-
-    if (g_config.target_file == NULL)
-    {
-        ERROR_MSG("Required target EFI file not found in ini file or command line arguments.");
-        return EXIT_FAILURE;
-    }
-    if (g_config.nvram_file == NULL)
-    {
-        ERROR_MSG("Required NVRAM file not found in init file or command line arguments.");
-        return EXIT_FAILURE;
-    }
-
-    /* use a default GUIDs file */
-    if (g_config.guids_file == NULL)
-    {
-        g_config.guids_file = GUIDS_FILE;
-    }
-
-    if (g_config.hex_editor == NULL)
-    {
-        WARNING_MSG("Path to hex editor not specified, some commands will not work");
-    }
-    else
-    {
-        if (access(g_config.hex_editor, R_OK) < 0)
-        {
-            WARNING_MSG("Hex editor %s does not exit or not accessible. Error: %s.", g_config.hex_editor, strerror(errno));
-        }
-    }
+    const char * target_file = argv[1];
+    const char * nvram_file = argv[2];
 
     /* and now start the party */
 
@@ -269,13 +182,6 @@ main(int argc, const char* argv[])
         return EXIT_FAILURE;
     }
 
-    /* load and map other images that contain protocols the main binary will be using */
-    /* NOTE: protocols must be configured via an ini file */
-    if (ini_file != NULL)
-    {
-        OUTPUT_MSG("[+] Loading and mapping any configured protocols binaries");
-        load_and_map_protocols(uc, &g_config.protos);
-    }
     /*
      * NVRAM variables are stored on a buffer outside Unicorn VM memory
      * we then use this inside the variable related functions
@@ -286,13 +192,6 @@ main(int argc, const char* argv[])
         ERROR_MSG("Failed to load NVRAM file.");
         return EXIT_FAILURE;
     }
-
-    //OUTPUT_MSG("[+] Loading GUIDs");
-    //if (load_guids(g_config.guids_file) != 0)
-    //{
-    //    WARNING_MSG("Failed to load GUIDs file.");
-    //    /* Not fatal, so don't exit. */
-    //}
 
     /*
      * create a fake EFI Boot and RunTime services table
@@ -371,7 +270,7 @@ main(int argc, const char* argv[])
 
 
     OUTPUT_MSG("[+] Starting main image emulation...");
-    err = uc_emu_start(uc, main_image->tramp_start, main_image->tramp_end, 0, 0);
+    uc_afl_ret afl_err = uc_afl_start(uc, main_image->tramp_start, main_image->tramp_end, 0, 0);
     VERIFY_UC_OPERATION_RET(err, EXIT_FAILURE, "Failed to start Unicorn emulation");
 
     OUTPUT_MSG("[+] All done, main image emulation complete.");
