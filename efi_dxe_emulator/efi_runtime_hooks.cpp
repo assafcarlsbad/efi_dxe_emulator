@@ -192,7 +192,7 @@ install_runtime_services(uc_engine *uc, uint64_t base_addr, size_t *out_count)
     uint64_t hooks_addr = base_addr + sizeof(EFI_RUNTIME_SERVICES);
     
     size_t array_size = sizeof(runtime_hooks) / sizeof(*runtime_hooks);
-    for (int i = 0; i < array_size; i++)
+    for (unsigned int i = 0; i < array_size; i++)
     {
         *(uint64_t*)((char*)&runtime_table + runtime_hooks[i].offset) = (uint64_t)(hooks_addr + hook_size * i);
     }
@@ -205,7 +205,7 @@ install_runtime_services(uc_engine *uc, uint64_t base_addr, size_t *out_count)
     VERIFY_UC_OPERATION_RET(err, 1, "Failed to write runtime hooks");
 
     /* add a Unicorn hook to each service - each hook corresponds to the emulated function */
-    for (int i = 0; i < array_size; i++)
+    for (unsigned int i = 0; i < array_size; i++)
     {
         runtime_hooks[i].addr = hooks_addr + hook_size * i;
         add_unicorn_hook(uc, UC_HOOK_CODE, runtime_hooks[i].hook, runtime_hooks[i].addr, runtime_hooks[i].addr);
@@ -226,7 +226,7 @@ char *
 lookup_runtime_services_table(int offset)
 {
     size_t array_size = sizeof(runtime_hooks) / sizeof(*runtime_hooks);
-    for (int i = 0; i < array_size; i++)
+    for (unsigned int i = 0; i < array_size; i++)
     {
         if (runtime_hooks[i].offset == offset)
         {
@@ -240,7 +240,7 @@ uint64_t
 lookup_runtime_services_table(std::string_view name)
 {
     size_t array_size = sizeof(runtime_hooks) / sizeof(*runtime_hooks);
-    for (int i = 0; i < array_size; i++)
+    for (unsigned int i = 0; i < array_size; i++)
     {
         if (name == runtime_hooks[i].name)
         {
@@ -413,7 +413,7 @@ hook_GetVariable(uc_engine *uc, uint64_t address, uint32_t size, void *user_data
         }
 #if 0
         DEBUG_MSG("Variable contents retrieved:");
-        for (int i = 0; i < content_size; i++)
+        for (unsigned int i = 0; i < content_size; i++)
         {
             printf("%02X ", var_buf[i]);
         }
