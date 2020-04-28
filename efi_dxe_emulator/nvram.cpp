@@ -72,7 +72,11 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#ifdef _WIN32
 #include <mman/sys/mman.h>
+#else
+#include <sys/mman.h>
+#endif
 #include <fcntl.h>
 #include <string>
 #include <memory>
