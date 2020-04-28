@@ -125,12 +125,12 @@
       <CppLanguageStandard>c++17</CppLanguageStandard>
     </ClCompile>
     <Link>
-      <LibraryDependencies>unicornafl; pthread</LibraryDependencies>
+      <LibraryDependencies>unicornafl; pthread; capstone</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
-      <LibraryDependencies>unicornafl; pthread</LibraryDependencies>
+      <LibraryDependencies>unicornafl; pthread; capstone</LibraryDependencies>
     </Link>
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
@@ -139,7 +139,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <Link>
-      <LibraryDependencies>unicornafl; pthread</LibraryDependencies>
+      <LibraryDependencies>unicornafl; pthread; capstone</LibraryDependencies>
     </Link>
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
@@ -148,7 +148,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <Link>
-      <LibraryDependencies>unicornafl; pthread</LibraryDependencies>
+      <LibraryDependencies>unicornafl; pthread; capstone</LibraryDependencies>
     </Link>
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
@@ -157,7 +157,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <Link>
-      <LibraryDependencies>unicornafl; pthread</LibraryDependencies>
+      <LibraryDependencies>unicornafl; pthread; capstone</LibraryDependencies>
     </Link>
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
@@ -166,7 +166,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
-      <LibraryDependencies>unicornafl; pthread</LibraryDependencies>
+      <LibraryDependencies>unicornafl; pthread; capstone</LibraryDependencies>
     </Link>
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
@@ -175,7 +175,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <Link>
-      <LibraryDependencies>unicornafl; pthread</LibraryDependencies>
+      <LibraryDependencies>unicornafl; pthread; capstone</LibraryDependencies>
     </Link>
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
@@ -184,7 +184,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <Link>
-      <LibraryDependencies>unicornafl; pthread</LibraryDependencies>
+      <LibraryDependencies>unicornafl; pthread; capstone</LibraryDependencies>
     </Link>
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
