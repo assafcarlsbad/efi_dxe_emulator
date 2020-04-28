@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{668cd0ac-587d-4833-ba9c-c82609e1ccad}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>nvram_fuzz</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <ItemGroup>
+    <ClCompile Include="..\efi_dxe_emulator\efi_boot_hooks.cpp" />
+    <ClCompile Include="..\efi_dxe_emulator\efi_runtime_hooks.cpp" />
+    <ClCompile Include="..\efi_dxe_emulator\loader.cpp" />
+    <ClCompile Include="..\efi_dxe_emulator\logging.cpp" />
+    <ClCompile Include="..\efi_dxe_emulator\mem_utils.cpp" />
+    <ClCompile Include="..\efi_dxe_emulator\protocols.cpp" />
+    <ClCompile Include="..\efi_dxe_emulator\string_ops.cpp" />
+    <ClCompile Include="..\efi_dxe_emulator\unicorn_utils.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\efi_dxe_emulator\config.h" />
+    <ClInclude Include="..\efi_dxe_emulator\efi_boot_hooks.h" />
+    <ClInclude Include="..\efi_dxe_emulator\efi_definitions.h" />
+    <ClInclude Include="..\efi_dxe_emulator\efi_runtime_hooks.h" />
+    <ClInclude Include="..\efi_dxe_emulator\events.h" />
+    <ClInclude Include="..\efi_dxe_emulator\guids.h" />
+    <ClInclude Include="..\efi_dxe_emulator\loader.h" />
+    <ClInclude Include="..\efi_dxe_emulator\logging.h" />
+    <ClInclude Include="..\efi_dxe_emulator\mem_utils.h" />
+    <ClInclude Include="..\efi_dxe_emulator\nvram.h" />
+    <ClInclude Include="..\efi_dxe_emulator\pe_definitions.h" />
+    <ClInclude Include="..\efi_dxe_emulator\protocols.h" />
+    <ClInclude Include="..\efi_dxe_emulator\string_ops.h" />
+    <ClInclude Include="..\efi_dxe_emulator\types.h" />
+    <ClInclude Include="..\efi_dxe_emulator\unicorn_hooks.h" />
+    <ClInclude Include="..\efi_dxe_emulator\unicorn_macros.h" />
+    <ClInclude Include="..\efi_dxe_emulator\unicorn_utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\efi_dxe_emulator\linux.inl" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;..;../efi_dxe_emulator;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Verbose>true</Verbose>
+      <AdditionalOptions>-fpermissive -Wno-pedantic %(AdditionalOptions)</AdditionalOptions>
+      <CppLanguageStandard>c++17</CppLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
