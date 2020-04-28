@@ -77,6 +77,7 @@
 #include <ctype.h>
 #include <string>
 #include <stdexcept>
+#include <assert.h>
 
 #include "pe_definitions.h"
 #include "efi_definitions.h"
