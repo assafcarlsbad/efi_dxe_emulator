@@ -68,7 +68,11 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#ifdef _WIN32
 #include <mman/sys/mman.h>
+#else
+#include <sys/mman.h>
+#endif
 #include <string.h>
 #include <unistd.h>
 #include <string.h>
