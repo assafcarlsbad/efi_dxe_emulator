@@ -374,7 +374,7 @@ find_vss_var(uint8_t *store_buf, uint32_t store_size, CHAR16 *var_name, EFI_GUID
 }
 
 struct nvram_variables *
-lookup_nvram_var(const wchar_t *var_name, EFI_GUID *guid, uint32_t *content_size, unsigned char **out_buf)
+lookup_nvram_var(const CHAR16 *var_name, EFI_GUID *guid, uint32_t *content_size, unsigned char **out_buf)
 {
     struct nvram_variables* entry = NULL;
     TAILQ_FOREACH(entry, &g_nvram_vars, entries)
@@ -395,7 +395,7 @@ lookup_nvram_var(const wchar_t *var_name, EFI_GUID *guid, uint32_t *content_size
 }
 
 int
-del_nvram_var(const wchar_t* var_name)
+del_nvram_var(const CHAR16* var_name)
 {
     struct nvram_variables* entry = NULL;
     TAILQ_FOREACH(entry, &g_nvram_vars, entries)
@@ -557,8 +557,8 @@ retrieve_nvram_vars(void)
                 else
                 {
                     // Name is stored as UCS2 string of CHAR16s
-                    var_name = reinterpret_cast<wchar_t*>(name_ptr);
-                    name_size = (var_name.length() + 1) * sizeof(wchar_t);
+                    var_name = reinterpret_cast<CHAR16*>(name_ptr);
+                    name_size = (var_name.length() + 1) * sizeof(CHAR16);
                 }
 
                 // Get entry GUID
@@ -582,7 +582,7 @@ retrieve_nvram_vars(void)
                 memcpy(&new_entry->guid, &guid, sizeof(EFI_GUID));
                 if (var_name.length() <= sizeof(new_entry->name))
                 {
-                    memcpy(new_entry->name, var_name.c_str(), var_name.length() * 2 + sizeof(wchar_t));
+                    memcpy(new_entry->name, var_name.c_str(), var_name.length() * 2 + sizeof(CHAR16));
                 }
                 else
                 {
