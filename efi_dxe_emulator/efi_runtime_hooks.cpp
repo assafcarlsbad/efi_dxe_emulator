@@ -80,8 +80,6 @@
 #include "unicorn_utils.h"
 #include "mem_utils.h"
 #include "guids.h"
-#include "taint.h"
-#include "mem_taint.h"
 
 extern struct nvram_vars_tailhead g_nvram_vars;
 
@@ -399,9 +397,6 @@ hook_GetVariable(uc_engine *uc, uint64_t address, uint32_t size, void *user_data
             goto out;
         }
 
-        /* taint only the required data size returned to the caller */
-        taint_mem(r_r9, sizeof(DataSize));
-
         /* return value */
         ret = EFI_BUFFER_TOO_SMALL;
         goto out;
@@ -442,10 +437,6 @@ hook_GetVariable(uc_engine *uc, uint64_t address, uint32_t size, void *user_data
             ret = EFI_UNSUPPORTED;
             goto out;
         }
-
-        /* taint the entire data buffer returned to the caller, plus the size */
-        taint_mem(Data, content_size);
-        taint_mem(r_r9, sizeof(DataSize));
 
         ret = EFI_SUCCESS;
         goto out;
