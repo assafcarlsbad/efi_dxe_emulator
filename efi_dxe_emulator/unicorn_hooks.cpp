@@ -73,6 +73,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/queue.h>
+#include <vector>
 
 #include "pe_definitions.h"
 #include "efi_definitions.h"
@@ -90,7 +91,6 @@
 #include "mem_utils.h"
 #include "capstone_utils.h"
 #include "taint.h"
-#include <vector>
 #include "coverage.h"
 
 struct unicorn_hooks
