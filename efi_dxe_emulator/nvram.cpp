@@ -278,7 +278,7 @@ dump_vss_store(uint8_t *store_buf, uint32_t store_size)
                 DEBUG_MSG("Data size: 0x%x Name size: 0x%x Header size: 0x%lx", var_header->DataSize, var_header->NameSize, sizeof(VSS_VARIABLE_HEADER));
                 printf("Variable name: ");
                 char *name_ptr = (char*)var_header + sizeof(VSS_VARIABLE_HEADER);
-                for (int i = 0; i < var_header->NameSize; i++)
+                for (unsigned int i = 0; i < var_header->NameSize; i++)
                 {
                     if (name_ptr[i] != 0x0)
                     {
@@ -287,7 +287,7 @@ dump_vss_store(uint8_t *store_buf, uint32_t store_size)
                 }
                 printf("\n");
                 char *data_ptr = (char*)var_header + sizeof(VSS_VARIABLE_HEADER) + var_header->NameSize;
-                for (int i = 0; i < var_header->DataSize; i++)
+                for (unsigned int i = 0; i < var_header->DataSize; i++)
                 {
                     printf("%02x ", (unsigned char)data_ptr[i]);
                 }
