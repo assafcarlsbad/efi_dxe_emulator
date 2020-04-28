@@ -196,7 +196,7 @@ prompt_loop(void)
 }
 
 void
-add_user_cmd(const char *name, char *shortcut, int (*fun)(const char*, uc_engine *), char *help, uc_engine *uc)
+add_user_cmd(char *name, char *shortcut, int (*fun)(const char*, uc_engine *), char *help, uc_engine *uc)
 {
     struct cmd_list *cur_cmd = NULL;
 

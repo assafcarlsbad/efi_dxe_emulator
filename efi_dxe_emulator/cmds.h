@@ -69,7 +69,7 @@
 int init_linenoise(const char *history_file);
 int close_linenoise(const char *history_file);
 int prompt_loop(void);
-void add_user_cmd(const char *name, char *shortcut, int (*fun)(const char*, uc_engine *), char *help, uc_engine *uc);
+void add_user_cmd(char *name, char *shortcut, int (*fun)(const char*, uc_engine *), char *help, uc_engine *uc);
 
 int help_cmd(const char *exp, uc_engine *uc);
 int history_cmd(const char *exp, uc_engine *uc);
