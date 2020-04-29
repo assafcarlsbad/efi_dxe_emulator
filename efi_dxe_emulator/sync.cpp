@@ -17,7 +17,7 @@ ULONG64 g_Base = EXEC_ADDRESS;
 static CHAR* g_DefaultHost = "127.0.0.1";
 static CHAR* g_DefaultPort = "9100";
 
-extern struct bin_images_tailq g_images;
+extern std::vector<bin_image> g_images;
 
 static int sync_bc_cmd(const char* exp, uc_engine* uc);
 
@@ -89,14 +89,13 @@ UpdateState(uc_engine *uc)
 
     HRESULT hRes;
 
-    struct bin_image* current_image = NULL;
-    TAILQ_FOREACH(current_image, &g_images, entries)
+    for (const auto& current_image : g_images)
     {
-        if ( (current_image->mapped_addr <= g_Offset) &&
-             (g_Offset <= current_image->mapped_addr + current_image->buf_size) )
+        if ( (current_image.mapped_addr <= g_Offset) &&
+             (g_Offset <= current_image.mapped_addr + current_image.buf_size) )
         {
-            g_Base = current_image->mapped_addr;
-            hRes = TunnelSend("[notice]{\"type\":\"module\",\"path\":\"%s\"}\n", current_image->file_path);
+            g_Base = current_image.mapped_addr;
+            hRes = TunnelSend("[notice]{\"type\":\"module\",\"path\":\"%s\"}\n", current_image.file_path);
             if (FAILED(hRes)) {
                 goto Exit;
             }

@@ -8,7 +8,7 @@
 #include <array>
 #include "cmds.h"
 
-extern struct bin_images_tailq g_images;
+extern std::vector<bin_image> g_images;
 
 /* Taken from https://www.ayrx.me/drcov-file-format */
 typedef struct _bb_entry_t
@@ -104,15 +104,15 @@ void record_basic_block(uc_engine *uc, uint64_t address, uint32_t size)
 
     struct bin_image* current_image = NULL;
     uint16_t mod_id = 0;
-    TAILQ_FOREACH(current_image, &g_images, entries)
+    for (const auto & current_image : g_images)
     {
-        if ((current_image->mapped_addr <= address) &&
-            (address <= current_image->mapped_addr + current_image->buf_size))
+        if ((current_image.mapped_addr <= address) &&
+            (address <= current_image.mapped_addr + current_image.buf_size))
         {
             bb_entry_t bb;
             bb.mod_id = mod_id;
             bb.size = size;
-            bb.start = address - current_image->mapped_addr;
+            bb.start = address - current_image.mapped_addr;
             basic_blocks.push_back(bb);
             break;
         }
@@ -132,15 +132,15 @@ void dump_coverage(const char* coverage_file)
 
     struct bin_image* current_image = NULL;
     uint16_t mod_id = 0;
-    TAILQ_FOREACH(current_image, &g_images, entries)
+    for (const auto& current_image : g_images)
     {
         drcov_header << mod_id << ", "
-                     << current_image->base_addr << ", "
-                     << current_image->base_addr + current_image->buf_size << ", "
+                     << current_image.base_addr << ", "
+                     << current_image.base_addr + current_image.buf_size << ", "
                      << 0 << ", "
                      << 0 << ", "
                      << 0 << ", "
-                     << current_image->file_path
+                     << current_image.file_path
                      << std::endl;
         mod_id++;
     }

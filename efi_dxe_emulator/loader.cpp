@@ -77,6 +77,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <assert.h>
+#include <vector>
 
 #include <unicorn/unicorn.h>
 
@@ -90,7 +91,7 @@
 #include "mem_utils.h"
 #include "unicorn_hooks.h"
 
-struct bin_images_tailq g_images = TAILQ_HEAD_INITIALIZER(g_images);
+std::vector<bin_image> g_images;
 
 EFI_SYSTEM_TABLE g_efi_table = {0};
 
@@ -102,11 +103,11 @@ EFI_SYSTEM_TABLE g_efi_table = {0};
 #define    MIN(a,b) (((a)<(b))?(a):(b))
 #endif /* MIN */
 
-static int fix_relocations(uc_engine *uc, struct bin_image *image);
-static int load_image(char *target_file, int main);
-static int map_image_to_emulator(uc_engine *uc, struct bin_image *target_image);
+static int fix_relocations(uc_engine *uc, struct bin_image &image);
+static int load_image(const char *target_file, int main);
+static int map_image_to_emulator(uc_engine *uc, struct bin_image &target_image);
 static int load_and_map_other_image(uc_engine *uc, char *image_path);
-static int parse_and_validate_PE_image(struct bin_image *target_image);
+static int parse_and_validate_PE_image(struct bin_image &target_image);
 
 #pragma region Exported functions
 
@@ -114,29 +115,29 @@ static int parse_and_validate_PE_image(struct bin_image *target_image);
  * load the main EFI binary that will be emulated
  */
 int
-load_and_map_main_image(char *image_path, uc_engine *uc)
+load_and_map_main_image(const char *image_path, uc_engine *uc)
 {
     if (load_image(image_path, 1) != 0)
     {
         ERROR_MSG("Failed to load %s.", image_path);
         return -1;
     }
-    struct bin_image *main_image = TAILQ_FIRST(&g_images);
-    assert(main_image != NULL);
+    struct bin_image& main_image = g_images.back();
+    //assert(main_image != NULL);
     
     /* don't deal with the two exceptions we found for now */
     /* almost all EFI binaries have this base address except two exceptions found in Apple ROM */
-    if (main_image->base_addr != EXEC_ADDRESS)
+    if (main_image.base_addr != EXEC_ADDRESS)
     {
         ERROR_MSG("Target binary has base address different than 0x%08X.", EXEC_ADDRESS);
         return -1;
     }
     
-    main_image->mapped_addr = main_image->base_addr;
+    main_image.mapped_addr = main_image.base_addr;
     
     /* install a trampoline for this image */
     /* not really used for the main image */
-    install_trampoline(uc, main_image->mapped_addr + main_image->entrypoint, &main_image->tramp_start, &main_image->tramp_end);
+    install_trampoline(uc, main_image.mapped_addr + main_image.entrypoint, &main_image.tramp_start, &main_image.tramp_end);
     
     /* finally copy the image to Unicorn emulation memory */
     if (map_image_to_emulator(uc, main_image) != 0)
@@ -157,8 +158,8 @@ load_and_map_main_image(char *image_path, uc_engine *uc)
 int
 load_and_map_protocols(uc_engine *uc, struct config_protocols_tailq *protocols)
 {
-    struct bin_image *main_image = TAILQ_LAST(&g_images, bin_images_tailq);
-    assert(main_image != NULL);
+    struct bin_image& main_image = g_images.back();
+    //assert(main_image != NULL);
     
     struct config_protocols *tmp_entry = NULL;
     TAILQ_FOREACH(tmp_entry, protocols, entries)
@@ -348,34 +349,32 @@ load_image(char *target_file, int main)
     }
     buf_size = stat_buf.st_size;
     
-    auto new_image = static_cast<struct bin_image *>(my_malloc(sizeof(struct bin_image)));
-    new_image->main = main;
-    new_image->base_addr = 0;
-    new_image->entrypoint = 0;
-    new_image->mapped_addr = 0;
-    new_image->tramp_start = 0;
-    new_image->tramp_end = 0;
-    new_image->file_path = target_file;
-    new_image->buf_size = buf_size;
-    new_image->buf = static_cast<uint8_t *>(mmap(0, buf_size, PROT_READ, MAP_SHARED, fd, 0));
-    if (new_image->buf == MAP_FAILED)
+    struct bin_image new_image{};
+    new_image.main = main;
+    new_image.base_addr = 0;
+    new_image.entrypoint = 0;
+    new_image.mapped_addr = 0;
+    new_image.tramp_start = 0;
+    new_image.tramp_end = 0;
+    new_image.file_path = (char *)target_file;
+    new_image.buf_size = buf_size;
+    new_image.buf = static_cast<uint8_t *>(mmap(0, buf_size, PROT_READ, MAP_SHARED, fd, 0));
+    if (new_image.buf == MAP_FAILED)
     {
         ERROR_MSG("Failed to mmap target file.");
-        free(new_image);
         close(fd);
         return -1;
     }
     close(fd);
     
-    if (parse_and_validate_PE_image(new_image) != 0)
+    if (parse_and_validate_PE_image(&new_image) != 0)
     {
         ERROR_MSG("Invalid target binary.");
-        free(new_image);
         return -1;
     }
     
     /* image is validated so we can add it to our list */
-    TAILQ_INSERT_TAIL(&g_images, new_image, entries);
+    g_images.push_back(new_image);
     
     return 0;
 }
@@ -388,10 +387,10 @@ load_and_map_other_image(uc_engine *uc, char *image_path)
 {
     // given that we are always inserting new images at the end of the queue
     // we can just get last image data to find where to install the next one
-    struct bin_image *last_image = TAILQ_LAST(&g_images, bin_images_tailq);
-    assert(last_image != NULL);
+    struct bin_image& last_image = g_images.back();
+    //assert(last_image != NULL);
     
-    uint64_t last_img_end = last_image->mapped_addr + last_image->buf_size;
+    uint64_t last_img_end = last_image.mapped_addr + last_image.buf_size;
     uint64_t last_aligned = ALIGN(last_img_end, uint64_t, 0x1000);
     
     DEBUG_MSG("Mapping other image to 0x%llx", last_aligned);
@@ -402,11 +401,11 @@ load_and_map_other_image(uc_engine *uc, char *image_path)
     }
     
     // the new image is now the last in the queue if load_image() was successful
-    last_image = TAILQ_LAST(&g_images, bin_images_tailq);
-    last_image->mapped_addr = last_aligned;
+    last_image = g_images.back();
+    last_image.mapped_addr = last_aligned;
     /* install trampoline for this image */
     /* we will start executing the image on the trampoline address instead of the entrypoint - check notes for this function */
-    install_trampoline(uc, last_image->mapped_addr + last_image->entrypoint, &last_image->tramp_start, &last_image->tramp_end);
+    install_trampoline(uc, last_image.mapped_addr + last_image.entrypoint, &last_image.tramp_start, &last_image.tramp_end);
     
     if (map_image_to_emulator(uc, last_image) != 0)
     {
@@ -417,9 +416,9 @@ load_and_map_other_image(uc_engine *uc, char *image_path)
     fix_relocations(uc, last_image);
     
     /* we want to be able to debug code in the axillary modules as well */
-    if (add_unicorn_hook(uc, UC_HOOK_CODE, hook_code, last_image->mapped_addr, last_image->mapped_addr + last_image->buf_size) != 0)
+    if (add_unicorn_hook(uc, UC_HOOK_CODE, hook_code, last_image.mapped_addr, last_image.mapped_addr + last_image.buf_size) != 0)
     {
-        ERROR_MSG("Failed to add code hook for module %s.", last_image->file_path);
+        ERROR_MSG("Failed to add code hook for module %s.", last_image.file_path);
         return EXIT_FAILURE;
     }
 
@@ -431,23 +430,23 @@ load_and_map_other_image(uc_engine *uc, char *image_path)
  * and map inside Unicorn memory
  */
 static int
-map_image_to_emulator(uc_engine *uc, struct bin_image *target_image)
+map_image_to_emulator(uc_engine *uc, struct bin_image &target_image)
 {
     uc_err err = UC_ERR_OK;
 
     /* map header */
     size_t full_hdr_size = sizeof(EFI_IMAGE_DOS_HEADER) + sizeof(EFI_IMAGE_NT_HEADERS64);
-    err = uc_mem_write(uc, target_image->mapped_addr, (void*)target_image->buf, full_hdr_size);
+    err = uc_mem_write(uc, target_image.mapped_addr, (void*)target_image.buf, full_hdr_size);
     VERIFY_UC_OPERATION_RET(err, -1, "Failed to write to Unicorn memory")
     
-    DEBUG_MSG("Number of sections to map is %d.", target_image->nr_sections);
-    unsigned char *section_start = target_image->header + sizeof(EFI_IMAGE_NT_HEADERS64);
+    DEBUG_MSG("Number of sections to map is %d.", target_image.nr_sections);
+    unsigned char *section_start = target_image.header + sizeof(EFI_IMAGE_NT_HEADERS64);
     EFI_IMAGE_SECTION_HEADER *section = (EFI_IMAGE_SECTION_HEADER*)section_start;
-    for (int i = 0; i < target_image->nr_sections; i++)
+    for (int i = 0; i < target_image.nr_sections; i++)
     {
-        DEBUG_MSG("Mapping section name %s @ 0x%llx VirtualSize: 0x%x RawSize: 0x%x", section->Name, target_image->mapped_addr + section->VirtualAddress, section->Misc.VirtualSize, section->SizeOfRawData);
+        DEBUG_MSG("Mapping section name %s @ 0x%llx VirtualSize: 0x%x RawSize: 0x%x", section->Name, target_image.mapped_addr + section->VirtualAddress, section->Misc.VirtualSize, section->SizeOfRawData);
         
-        err = uc_mem_write(uc, target_image->mapped_addr + section->VirtualAddress, (void*)(target_image->buf + section->PointerToRawData), MIN(section->SizeOfRawData, section->Misc.VirtualSize));
+        err = uc_mem_write(uc, target_image.mapped_addr + section->VirtualAddress, (void*)(target_image.buf + section->PointerToRawData), MIN(section->SizeOfRawData, section->Misc.VirtualSize));
         if (err != UC_ERR_OK)
         {
             ERROR_MSG("Failed to write section %s into emulator memory: %s (%d)", section->Name, uc_strerror(err), err);
@@ -465,21 +464,21 @@ map_image_to_emulator(uc_engine *uc, struct bin_image *target_image)
  * since the delta will be zero for it
  */
 static int
-fix_relocations(uc_engine *uc, struct bin_image *image)
+fix_relocations(uc_engine *uc, struct bin_image &image)
 {
-    if (image->relocation_info.VirtualAddress == 0)
+    if (image.relocation_info.VirtualAddress == 0)
     {
         return 0;
     }
     
     uc_err err = UC_ERR_OK;
     
-    DEBUG_MSG("Relocation table virtual address: 0x%x size: %d", image->relocation_info.VirtualAddress, image->relocation_info.Size);
+    DEBUG_MSG("Relocation table virtual address: 0x%x size: %d", image.relocation_info.VirtualAddress, image.relocation_info.Size);
     /* this tells us where the reloc section is so we can process relocation information available there */
-    uint64_t reloc_start = image->mapped_addr + image->relocation_info.VirtualAddress;
-    uint64_t reloc_end = reloc_start + image->relocation_info.Size;
+    uint64_t reloc_start = image.mapped_addr + image.relocation_info.VirtualAddress;
+    uint64_t reloc_end = reloc_start + image.relocation_info.Size;
     /* how much did we relocate this image when we mapped in into Unicorn emulation memory */
-    uint64_t delta = image->mapped_addr - image->base_addr;
+    uint64_t delta = image.mapped_addr - image.base_addr;
     
     uint64_t current_reloc = reloc_start;
     /*
@@ -490,7 +489,7 @@ fix_relocations(uc_engine *uc, struct bin_image *image)
     while (current_reloc < reloc_end)
     {
         /* the location of the relocation block header */
-        EFI_IMAGE_BASE_RELOCATION *reloc_hdr = (EFI_IMAGE_BASE_RELOCATION*)(image->buf + image->relocation_info.VirtualAddress);
+        EFI_IMAGE_BASE_RELOCATION *reloc_hdr = (EFI_IMAGE_BASE_RELOCATION*)(image.buf + image.relocation_info.VirtualAddress);
         DEBUG_MSG("Relocation info: 0x%x 0x%x", reloc_hdr->VirtualAddress, reloc_hdr->SizeOfBlock);
         int total_entries = (reloc_hdr->SizeOfBlock - sizeof(EFI_IMAGE_BASE_RELOCATION))/sizeof(uint16_t);
         DEBUG_MSG("Total relocation entries: %d", total_entries);
@@ -519,11 +518,11 @@ fix_relocations(uc_engine *uc, struct bin_image *image)
             /* the address where we will have to update the relocation
              * this is an address already inside Unicorn's emulation memory
              */
-            uint64_t target_reloc_addr = image->mapped_addr + reloc_hdr->VirtualAddress + reloc_base;
+            uint64_t target_reloc_addr = image.mapped_addr + reloc_hdr->VirtualAddress + reloc_base;
             DEBUG_MSG("mapped relocation addr: 0x%llx", target_reloc_addr);
             DEBUG_MSG("original relocation addr: 0x%llx", target_reloc_addr-delta);
             /* the original relocation value - retrieved from the buffer to avoid reading from Unicorn emulation memory */
-            uint64_t original_value = *(uint64_t*)(image->buf + reloc_hdr->VirtualAddress + reloc_base);
+            uint64_t original_value = *(uint64_t*)(image.buf + reloc_hdr->VirtualAddress + reloc_base);
             DEBUG_MSG("relocation original value: 0x%llx", original_value);
             /* fix by the delta between original address and where we mapped this binary in Unicorn emulation memory */
             original_value += delta;

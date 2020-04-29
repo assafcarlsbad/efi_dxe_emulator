@@ -101,7 +101,7 @@
 #include "taint.h"
 #include "coverage.h"
 
-extern struct bin_images_tailq g_images;
+extern std::vector<bin_image> g_images;
 struct configuration g_config;
 
 void
@@ -360,12 +360,11 @@ main(int argc, const char * argv[])
         return EXIT_FAILURE;
     }
     
-    struct bin_image *main_image = TAILQ_FIRST(&g_images);
-    assert(main_image != NULL);
+    struct bin_image& main_image = g_images.front();
     
     OUTPUT_MSG("[+] Configuring Unicorn initial state...");
     /* set the initial registers state */
-    uint64_t r_rip = main_image->base_addr + main_image->entrypoint;
+    uint64_t r_rip = main_image.base_addr + main_image.entrypoint;
     err = uc_reg_write(uc, UC_X86_REG_RIP, &r_rip);
     VERIFY_UC_OPERATION_RET(err, EXIT_FAILURE, "Failed to write initial RIP register");
 
@@ -405,23 +404,17 @@ main(int argc, const char * argv[])
         return EXIT_FAILURE;
     }
 
-    uint64_t total_images = 0;
-    struct bin_image *tmp_image = NULL;
-    TAILQ_FOREACH(tmp_image, &g_images, entries)
-    {
-        total_images++;
-    }
+    uint64_t total_images = g_images.size();
     OUTPUT_MSG("[+] Total images loaded: %llu", total_images);
     
     /* start emulating the secondary images so they install whatever protocols they support */    
     OUTPUT_MSG("[+] Starting secondary images emulation...");
-    struct bin_image *secondary_image = NULL;
-    TAILQ_FOREACH(secondary_image, &g_images, entries)
+    for (const auto& secondary_image : g_images)
     {
-        if (secondary_image->main == 0)
+        if (secondary_image.main == 0)
         {
-            err = uc_emu_start(uc, secondary_image->tramp_start, secondary_image->tramp_end, 0, 0);
-            VERIFY_UC_OPERATION_RET(err, EXIT_FAILURE, "Failed to start Unicorn emulation for %s", secondary_image->file_path);
+            err = uc_emu_start(uc, secondary_image.tramp_start, secondary_image.tramp_end, 0, 0);
+            VERIFY_UC_OPERATION_RET(err, EXIT_FAILURE, "Failed to start Unicorn emulation for %s", secondary_image.file_path);
         }
     }
     
@@ -450,8 +443,8 @@ main(int argc, const char * argv[])
                       UC_HOOK_CODE,
                       hook_code,
                       NULL,
-                      main_image->base_addr + main_image->entrypoint,
-                      main_image->base_addr + main_image->entrypoint + main_image->buf_size);
+                      main_image.base_addr + main_image.entrypoint,
+                      main_image.base_addr + main_image.entrypoint + main_image.buf_size);
     VERIFY_UC_OPERATION_RET(err, EXIT_FAILURE, "Failed to add main Unicorn code hook.");
     /*
      * we also want to have a chance to trace the EFI services we are emulating
@@ -465,7 +458,7 @@ main(int argc, const char * argv[])
     }
     
     /* add breakpoint on entrypoint - we always start the emulator stopped on entrypoint */
-    if (add_breakpoint(main_image->base_addr + main_image->entrypoint, 0, kTempBreakpoint, "Entrypoint") != 0)
+    if (add_breakpoint(main_image.base_addr + main_image.entrypoint, 0, kTempBreakpoint, "Entrypoint") != 0)
     {
         ERROR_MSG("Failed to add entrypoint breakpoint.");
         return EXIT_FAILURE;
@@ -479,7 +472,7 @@ main(int argc, const char * argv[])
     }
 
     OUTPUT_MSG("[+] Starting main image emulation...");
-    err = uc_emu_start(uc, main_image->tramp_start, main_image->tramp_end, 0, 0);
+    err = uc_emu_start(uc, main_image.tramp_start, main_image.tramp_end, 0, 0);
     VERIFY_UC_OPERATION_RET(err, EXIT_FAILURE, "Failed to start Unicorn emulation");
 
     OUTPUT_MSG("[+] Starting notification routines emulation...");
@@ -487,7 +480,7 @@ main(int argc, const char * argv[])
 
     OUTPUT_MSG("[+] All done, main image emulation complete.");
 
-    auto coverage_file = std::filesystem::path(main_image->file_path).replace_extension("cov");
+    auto coverage_file = std::filesystem::path(main_image.file_path).replace_extension("cov");
     OUTPUT_MSG("[+] Code coverage written to %s.", coverage_file.string().c_str());
     dump_coverage(coverage_file.string().c_str());
 

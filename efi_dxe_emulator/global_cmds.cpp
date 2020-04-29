@@ -89,7 +89,7 @@
 #include "guids.h"
 #include "events.h"
 
-extern struct bin_images_tailq g_images;
+extern std::vector<bin_image> g_images;
 extern struct protocols_list_tailq g_installed_protocols;
 
 static int quit_cmd(const char *exp, uc_engine *uc);
@@ -163,31 +163,29 @@ info_cmd(const char *exp, uc_engine *uc)
         return 0;
     }
 
-    struct bin_image *main_image = TAILQ_FIRST(&g_images);
-    assert(main_image != NULL);
+    struct bin_image &main_image = g_images.front();
     
     if (token == "target")
     {
-        OUTPUT_MSG("EFI Executable:\n%s", main_image->file_path);
-        OUTPUT_MSG("Base address: 0%llx", main_image->base_addr);
-        OUTPUT_MSG("Entrypoint: 0x%llx (0x%llx)", main_image->base_addr + main_image->entrypoint, main_image->entrypoint);
-        OUTPUT_MSG("Image size: 0x%llx", main_image->buf_size);
-        OUTPUT_MSG("Number of sections: %d", main_image->nr_sections);
+        OUTPUT_MSG("EFI Executable:\n%s", main_image.file_path);
+        OUTPUT_MSG("Base address: 0%llx", main_image.base_addr);
+        OUTPUT_MSG("Entrypoint: 0x%llx (0x%llx)", main_image.base_addr + main_image.entrypoint, main_image.entrypoint);
+        OUTPUT_MSG("Image size: 0x%llx", main_image.buf_size);
+        OUTPUT_MSG("Number of sections: %d", main_image.nr_sections);
     }
     else if (token == "all")
     {
         int count = 1;
-        struct bin_image *tmp_image = NULL;
-        TAILQ_FOREACH(tmp_image, &g_images, entries)
+        for (const auto& tmp_image : g_images)
         {
             OUTPUT_MSG("---[ Image #%02d ]---", count++);
-            OUTPUT_MSG("EFI Executable: \n%s", tmp_image->file_path);
-            OUTPUT_MSG("Mapped address: 0x%llx", tmp_image->mapped_addr);
-            OUTPUT_MSG("Mapped entrypoint: 0x%llx", tmp_image->mapped_addr + tmp_image->entrypoint);
-            OUTPUT_MSG("Base address: 0%llx", tmp_image->base_addr);
-            OUTPUT_MSG("Entrypoint: 0x%llx (0x%llx)", tmp_image->base_addr + tmp_image->entrypoint, tmp_image->entrypoint);
-            OUTPUT_MSG("Image size: 0x%llx", tmp_image->buf_size);
-            OUTPUT_MSG("Number of sections: %d", tmp_image->nr_sections);
+            OUTPUT_MSG("EFI Executable: \n%s", tmp_image.file_path);
+            OUTPUT_MSG("Mapped address: 0x%llx", tmp_image.mapped_addr);
+            OUTPUT_MSG("Mapped entrypoint: 0x%llx", tmp_image.mapped_addr + tmp_image.entrypoint);
+            OUTPUT_MSG("Base address: 0%llx", tmp_image.base_addr);
+            OUTPUT_MSG("Entrypoint: 0x%llx (0x%llx)", tmp_image.base_addr + tmp_image.entrypoint, tmp_image.entrypoint);
+            OUTPUT_MSG("Image size: 0x%llx", tmp_image.buf_size);
+            OUTPUT_MSG("Number of sections: %d", tmp_image.nr_sections);
         }
     }
     else if (token == "protocols")
